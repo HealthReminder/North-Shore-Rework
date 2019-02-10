@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.PostProcessing;
-
+using MinAttribute = UnityEngine.PostProcessing.MinAttribute;
 namespace UnityEditor.PostProcessing
 {
     [CustomPropertyDrawer(typeof(MinAttribute))]
