@@ -2,10 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pointer : MonoBehaviour {
+public class PointerController : MonoBehaviour {
 
 	public Transform defenderDointer,attackerDointer;
 	public LineRenderer line;
+
+	//Make it a singleton
+    public static PointerController instance;
+    void Awake(){
+		//Singleton pattern
+		if  (instance == null){
+			DontDestroyOnLoad(gameObject);
+			instance = this;
+		}	
+		else if (instance != this)
+			Destroy(gameObject);
+		
+	}
 
 	public void SetDefender(Vector3 newDos) {
 		line.SetPosition(0,attackerDointer.transform.position);

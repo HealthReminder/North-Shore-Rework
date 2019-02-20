@@ -11,7 +11,6 @@ public class BattleManager : MonoBehaviour {
 	public GameObject battleCanvas;
 	public Text defenderName,defenderDice,defenderTotal,attackerName,attackerDice,attackerTotal;
 	public bool isBusy = false;
-	public Pointer dointer;
 	public bool ignoreUI = true;
 	public bool isFastMode = false;
 
@@ -20,7 +19,7 @@ public class BattleManager : MonoBehaviour {
 		aMan = FindObjectOfType<AudioManager>();
 	}
 
-	public IEnumerator Battle(Province attacker, Province defender) {
+	public IEnumerator Battle(ProvinceData attacker, ProvinceData defender) {
 		defenderName.text = defender.owner;
 		attackerName.text = attacker.owner;
 		defenderTotal.color = new Color(1,1,1,1);
@@ -131,7 +130,7 @@ public class BattleManager : MonoBehaviour {
 			yield return null;
 			defender.UpdateGUI();
 			attacker.UpdateGUI();
-			foreach(Province h in defender.neighbours)
+			foreach(ProvinceData h in defender.neighbours)
 				h.UpdateGUI();
 			//print("Attacker won.");
 		}
@@ -146,7 +145,7 @@ public class BattleManager : MonoBehaviour {
 
 		//while(!Input.anyKey)
 		//	yield return null;
-		dointer.Clear();
+		PointerController.instance.Clear();
 		
 		battleCanvas.SetActive(false);
 //		print("Done.");

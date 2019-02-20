@@ -4,7 +4,8 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -121,10 +122,10 @@ MonoBehaviour:
         neutralWhiteClip: 10
       basic:
         postExposure: 0.13
-        temperature: -5
+        temperature: -2
         tint: 0
         hueShift: 0
-        saturation: 2
+        saturation: 1.5
         contrast: 1.09
       channelMixer:
         red: {x: 1, y: 0, z: 0}
@@ -313,7 +314,7 @@ MonoBehaviour:
     m_Enabled: 1
     m_Settings:
       colored: 0
-      intensity: 0.109
+      intensity: 0.04
       size: 0.63
       luminanceContribution: 0
   vignette:
@@ -322,7 +323,7 @@ MonoBehaviour:
       mode: 0
       color: {r: 0, g: 0, b: 0, a: 1}
       center: {x: 0.5, y: 0.5}
-      intensity: 0.365
+      intensity: 0.15
       smoothness: 0.073
       roundness: 1
       mask: {fileID: 0}

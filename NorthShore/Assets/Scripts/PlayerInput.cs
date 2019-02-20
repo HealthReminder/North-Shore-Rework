@@ -7,19 +7,17 @@ public class PlayerInput : MonoBehaviour {
 	public bool wasInitialized = false;
 	public bool isBusy = false;
 	public Camera playerCam;
-	public Province attacker, defender;
+	public ProvinceData attacker, defender;
 
 	public BattleManager bM;
-	public Province province;
+	public ProvinceData province;
 
 	[SerializeField]
 	public AICurrentStats pStats;
 
 	[Header("Menu")]
 	public MenuManager menuMan;
-	[Header("Pointer GUI")]
-	public Pointer dointer;
-	Province lastHoveredProvince = null;
+	ProvinceData lastHoveredProvince = null;
 
 	
 	 void Update() {
@@ -56,10 +54,10 @@ public class PlayerInput : MonoBehaviour {
 					//Debug.DrawLine(ray.origin, hit.point);
 					if(hit.transform.parent){
 					//Checks if hit a cell
-						if(hit.transform.parent.GetComponent<Province>()){
+						if(hit.transform.parent.GetComponent<ProvinceData>()){
 						
 						//If it hits a province change the referenced
-						province = hit.transform.parent.GetComponent<Province>();
+						province = hit.transform.parent.GetComponent<ProvinceData>();
 
 						//Get the new hovered province
 						if(lastHoveredProvince!= null){
@@ -87,7 +85,7 @@ public class PlayerInput : MonoBehaviour {
 						if(province.owner == "Player") {
 							//If it had another cell attacker, deselect it.
 							if(attacker!= null) {
-								foreach(Province p in attacker.neighbours)
+								foreach(ProvinceData p in attacker.neighbours)
 									p.transform.position+= new Vector3(0,-0.6f,0);
 								attacker.transform.position+= new Vector3(0,-1.2f,0);
 								attacker = null;
@@ -100,9 +98,9 @@ public class PlayerInput : MonoBehaviour {
 							//Only selects the clicked cell if it has more than 1 troop.
 							if(province.troops >1){
 								attacker = province;
-								dointer.SetAttacker(hit.point+ new Vector3(0,1,0));
+								PointerController.instance.SetAttacker(hit.point+ new Vector3(0,1,0));
 								attacker.transform.position+= new Vector3(0,1.2f,0);
-								foreach(Province p in attacker.neighbours)
+								foreach(ProvinceData p in attacker.neighbours)
 									p.transform.position+= new Vector3(0,0.6f,0);
 							}
 							
@@ -116,10 +114,10 @@ public class PlayerInput : MonoBehaviour {
 									defender = null;
 								}
 								//Only selects the defender if it has a neighbouring attacker (troops cannot go diagonally).
-								foreach(Province p in attacker.neighbours)
+								foreach(ProvinceData p in attacker.neighbours)
 									if(p == province){
 										defender = province;
-										dointer.SetDefender(hit.point+ new Vector3(0,1,0));
+										PointerController.instance.SetDefender(hit.point+ new Vector3(0,1,0));
 										defender.transform.position+= new Vector3(0,0.6f,0);
 										StartCoroutine(CallAttack());
 									}		
@@ -145,7 +143,7 @@ public class PlayerInput : MonoBehaviour {
 			}
 			isBusy = false;
             if(attacker!= null) {
-				foreach(Province p in attacker.neighbours)
+				foreach(ProvinceData p in attacker.neighbours)
 									p.transform.position+= new Vector3(0,-0.6f,0);
 				attacker.transform.position+= new Vector3(0,-1.2f,0);
 				attacker = null;

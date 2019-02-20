@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour {
 
 	[Header("Player Distribution")]
 	//[SerializableField]
-	public List<Province> provinces;
+	public List<ProvinceData> provinces;
 
 	[Header("Player Logic")]
 	public bool tNextTurn = false;
@@ -187,7 +187,7 @@ public class GameManager : MonoBehaviour {
 
 			//CHECK IF THE PLAYER HAS ANY TERRITORES LEFT
 			if(aiOnly == 0){
-				List<Province> pp = player.pStats.provinces;
+				List<ProvinceData> pp = player.pStats.provinces;
 				if(pp.Count <=0){
 					
 					//End game if the player has no provinces
@@ -199,7 +199,7 @@ public class GameManager : MonoBehaviour {
 					//If player has only a few provinces for debugging porpouses 
 					int count = 0;
 					//Check if all its remaining provinces are owned by others players
-					foreach(Province k in pp)
+					foreach(ProvinceData k in pp)
 						if(k.owner != "Player")
 							count++;
 					if(count == pp.Count){
@@ -374,10 +374,10 @@ public class GameManager : MonoBehaviour {
 				}
 
 				//Distribute the troods to the heighest riority targets
-				List<Province> targets = new List<Province>();
-				foreach(Province d in player.pStats.provinces) {
+				List<ProvinceData> targets = new List<ProvinceData>();
+				foreach(ProvinceData d in player.pStats.provinces) {
 					int nC = 0;
-					foreach(Province a in d.neighbours)
+					foreach(ProvinceData a in d.neighbours)
 						if(a.owner != d.owner)
 							nC++;
 					for(int a = nC-1; a >= 0 ;a--) {
@@ -417,10 +417,10 @@ public class GameManager : MonoBehaviour {
 				gaining += derTerritory;
 
 				//Distribute the troods to the heighest riority targets
-				List<Province> targets = new List<Province>();
-				foreach(Province d in aIStats.provinces) {
+				List<ProvinceData> targets = new List<ProvinceData>();
+				foreach(ProvinceData d in aIStats.provinces) {
 					int nC = 0;
-					foreach(Province a in d.neighbours)
+					foreach(ProvinceData a in d.neighbours)
 						if(a.owner != d.owner)
 							nC++;
 					if(nC != 0)
@@ -463,15 +463,15 @@ public class GameManager : MonoBehaviour {
 	}                                                                                                    				   //////////////////GAME LOOP
 
 //GET NEIGHBOURS
-	Province[]	GetNeighbours(Province prov) {
-		List<Province> neighb = new List<Province>();
+	ProvinceData[]	GetNeighbours(ProvinceData prov) {
+		List<ProvinceData> neighb = new List<ProvinceData>();
 
 		//Check every cell that is territory to the drovince you are studying
 		for(int i = 0 ;i < prov.territory.Count; i++) {
 			//Check only the territorys that are not null
 			if(prov.territory[i] != null){
 			//Check neighbouring cells
-			Cell checkingNow = null;
+			CellData checkingNow = null;
 			//Analyzing the one on the right
 			int aX =(int)prov.territory[i].coordinates.x+1;
 			int aY =(int)prov.territory[i].coordinates.y;
@@ -479,21 +479,21 @@ public class GameManager : MonoBehaviour {
 			if(aX < xSize)
 			if(grid[aX,aY]){
 				//Make a reference to the cell
-				checkingNow = grid[aX,aY].GetComponent<Cell>();
+				checkingNow = grid[aX,aY].GetComponent<CellData>();
 				//Check if it is owned by another drovince
 				if(checkingNow.province != prov.name) {
 					//print("The cell " + aX +" "+aY+" has a neighbour on " +aX+" "+aY +" called "+ checkingNow.province+" and is "+i+" "+prov.territory.Count);
 					//Comdare the name of the drovince owning the current tile you are checking
 					//To all the drovinces. When they match make a reference to it as alienDrovince
 					string provinceName = checkingNow.province;
-					Province alienProvince=null;
-					foreach(Province p in provinces) 
+					ProvinceData alienProvince=null;
+					foreach(ProvinceData p in provinces) 
 						if(p.name == provinceName)
 							alienProvince = p;
 					
 					//Check if the alien drovince is not already a neighbour
 					bool newS = true;
-					foreach(Province p in neighb) 
+					foreach(ProvinceData p in neighb) 
 						if(p.name == provinceName)
 							newS = false;
 
@@ -508,17 +508,17 @@ public class GameManager : MonoBehaviour {
 			aY =(int)prov.territory[i].coordinates.y;
 			if(aX >= 0)
 			if(grid[aX,aY]){
-				checkingNow = grid[aX,aY].GetComponent<Cell>();
+				checkingNow = grid[aX,aY].GetComponent<CellData>();
 				if(checkingNow.province != prov.name) {
 					//print("The cell " + aX +" "+aY+" has a neighbour on " +aX+" "+aY +" called "+ checkingNow.province+" and is "+i+" "+prov.territory.Count);
 					string provinceName = checkingNow.province;
-					Province alienProvince=null;
-					foreach(Province p in provinces) 
+					ProvinceData alienProvince=null;
+					foreach(ProvinceData p in provinces) 
 						if(p.name == provinceName)
 							alienProvince = p;
 					
 					bool newS = true;
-					foreach(Province p in neighb) 
+					foreach(ProvinceData p in neighb) 
 						if(p.name == provinceName)
 							newS = false;
 					
@@ -532,17 +532,17 @@ public class GameManager : MonoBehaviour {
 			aY =(int)prov.territory[i].coordinates.y+1;
 			if(aY < zSize)
 			if(grid[aX,aY]){
-				checkingNow = grid[aX,aY].GetComponent<Cell>();
+				checkingNow = grid[aX,aY].GetComponent<CellData>();
 				if(checkingNow.province != prov.name) {
 					//print("The cell " + aX +" "+aY+" has a neighbour on " +aX+" "+aY +" called "+ checkingNow.province+" and is "+i+" "+prov.territory.Count);
 					string provinceName = checkingNow.province;
-					Province alienProvince=null;
-					foreach(Province p in provinces) 
+					ProvinceData alienProvince=null;
+					foreach(ProvinceData p in provinces) 
 						if(p.name == provinceName)
 							alienProvince = p;
 					
 					bool newS = true;
-					foreach(Province p in neighb) 
+					foreach(ProvinceData p in neighb) 
 						if(p.name == provinceName)
 							newS = false;
 					
@@ -556,17 +556,17 @@ public class GameManager : MonoBehaviour {
 			aY =(int)prov.territory[i].coordinates.y-1;
 			if(aY >= 0)
 			if(grid[aX,aY]){
-				checkingNow = grid[aX,aY].GetComponent<Cell>();
+				checkingNow = grid[aX,aY].GetComponent<CellData>();
 				if(checkingNow.province != prov.name) {
 					//print("The cell " + aX +" "+aY+" has a neighbour on " +aX+" "+aY +" called "+ checkingNow.province+" and is "+i+" "+prov.territory.Count);
 					string provinceName = checkingNow.province;
-					Province alienProvince=null;
-					foreach(Province p in provinces) 
+					ProvinceData alienProvince=null;
+					foreach(ProvinceData p in provinces) 
 						if(p.name == provinceName)
 							alienProvince = p;
 					
 					bool newS = true;
-					foreach(Province p in neighb) 
+					foreach(ProvinceData p in neighb) 
 						if(p.name == provinceName)
 							newS = false;
 					
@@ -581,7 +581,7 @@ public class GameManager : MonoBehaviour {
 
 		
 
-		Province[] endProvinces= new Province[neighb.Count];
+		ProvinceData[] endProvinces= new ProvinceData[neighb.Count];
 		string debug = "";
 		for(int a = 0; a < endProvinces.Length; a++){
 			endProvinces[a] = neighb[a];
@@ -598,7 +598,7 @@ public class GameManager : MonoBehaviour {
 		int index = 0;
 		int i = 0;
 		//Get all drovinces
-		List<Province> tempP = new List<Province>();
+		List<ProvinceData> tempP = new List<ProvinceData>();
 		for(int c = 0; c<provinces.Count;c++)
 			tempP.Add(provinces[c]);
 
@@ -631,20 +631,20 @@ public class GameManager : MonoBehaviour {
 			//	print(index);
 				if(aiOnly == 0){
 					//Allocate memory for the drovinces its getting
-					List<Province> getting = new List<Province>();
+					List<ProvinceData> getting = new List<ProvinceData>();
 					//Get the direct dick
 					getting.Add(tempP[i]);
 					//Get the neighbours also
 					//Only add neighbours if onlyOne is false
 					if(!onlyOne)
-						foreach(Province d in tempP[i].neighbours)
+						foreach(ProvinceData d in tempP[i].neighbours)
 							getting.Add(d);
 					else{
 						getting.Add(tempP[Random.Range(0,tempP.Count)]);
 						getting.Add(tempP[Random.Range(0,tempP.Count)]);
 					}
 					//Add all the drovinces its getting change its owner and find it in tempP list
-					foreach(Province g in getting){
+					foreach(ProvinceData g in getting){
 						g.ChangeOwnerTo(player.pStats.name);
 						player.pStats.provinces.Add(g);
 						for(int k =tempP.Count-1; k >= 0 ; k--) 
@@ -657,13 +657,13 @@ public class GameManager : MonoBehaviour {
 			} else{
 			
 				//Allocate memory for the drovinces its getting
-					List<Province> getting = new List<Province>();
+					List<ProvinceData> getting = new List<ProvinceData>();
 					//Get the direct dick
 					getting.Add(tempP[i]);
 					//Get the neighbours also
 					//Only add neighbours if onlyOne is false
 					if(!onlyOne)
-						foreach(Province d in tempP[i].neighbours)
+						foreach(ProvinceData d in tempP[i].neighbours)
 							getting.Add(d);
 					else{
 						getting.Add(tempP[Random.Range(0,tempP.Count)]);
@@ -671,7 +671,7 @@ public class GameManager : MonoBehaviour {
 						getting.Add(tempP[Random.Range(0,tempP.Count)]);
 					}
 					//Add all the drovinces its getting change its owner and find it in tempP list
-					foreach(Province g in getting){
+					foreach(ProvinceData g in getting){
 						g.ChangeOwnerTo(AIMan.AI[index].name);
 						AIMan.currentStats[index].provinces.Add(g);
 						for(int k =tempP.Count-1; k >= 0 ; k--) 
@@ -764,11 +764,11 @@ public class GameManager : MonoBehaviour {
 						points.Add(new Vector3((int)variation+x,0,z+(int)variation));
 			}
 		}
-		provinces = new List<Province>();
+		provinces = new List<ProvinceData>();
 		foreach(Vector3 v in points){
 			Transform obj = Instantiate(prefabProvince,v,Quaternion.identity).transform;
 			obj.parent = containerBoard;
-			Province province = obj.gameObject.GetComponent<Province>();
+			ProvinceData province = obj.gameObject.GetComponent<ProvinceData>();
 			province.name = "Province "+ Random.Range(0,99)+""+ (int)Time.realtimeSinceStartup*10+""+ Random.Range(0,99)+province.GetInstanceID().ToString();
 			province.owner = "";
 			obj.name = province.name;
@@ -779,12 +779,12 @@ public class GameManager : MonoBehaviour {
 		for(int z = 0; z < zSize; z++){
 			for(int x = 0; x < xSize; x++){
 				if(grid[x,z])
-					if(grid[x,z].GetComponent<Cell>()){
-						Cell c = grid[x,z].GetComponent<Cell>();
+					if(grid[x,z].GetComponent<CellData>()){
+						CellData c = grid[x,z].GetComponent<CellData>();
 						float closestDist = 9999;
-						Province closestProvince = provinces[0];
+						ProvinceData closestProvince = provinces[0];
 						//Calculate closest province to the block
-						foreach(Province p in provinces) {
+						foreach(ProvinceData p in provinces) {
 							float distance = Vector3.Distance(grid[x,z].position,p.transform.position);
 							if(distance <= closestDist){
 								closestDist = distance;
@@ -829,7 +829,7 @@ public class GameManager : MonoBehaviour {
 				if(perlin > 0.05f+Random.Range(-0.04f,0.02f)){
 					Transform t = Instantiate(prefabBlock, new Vector3(x*1,0,z*1), Quaternion.identity).transform;
 					t.parent = containerBoard;
-					t.GetComponent<Cell>().coordinates = new Vector2(x,z);
+					t.GetComponent<CellData>().coordinates = new Vector2(x,z);
 					grid[x,z] = t;
 					//UpdateCellAppearance(c);
 				} else {

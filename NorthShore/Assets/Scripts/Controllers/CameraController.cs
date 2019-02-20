@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraShake : MonoBehaviour {
+public class CameraController : MonoBehaviour {
 
 
 	// How long the object should shake for.
@@ -13,6 +13,18 @@ public class CameraShake : MonoBehaviour {
 
 	Vector3 originalPos;
 
+	//Make it a singleton
+    public static CameraController instance;
+    void Awake(){
+		//Singleton pattern
+		if  (instance == null){
+			DontDestroyOnLoad(gameObject);
+			instance = this;
+		}	
+		else if (instance != this)
+			Destroy(gameObject);
+		
+	}
 	void Start()
 	{
 		originalPos = transform.localPosition;

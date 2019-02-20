@@ -5,16 +5,16 @@ using UnityEngine.UI;
 
 
 	[System.Serializable]
-public class Province : MonoBehaviour {
+public class ProvinceData : MonoBehaviour {
 
 	public new string name;
 	public string owner;
 	public int troops;
 	
 
-	public Province[] neighbours;
+	public ProvinceData[] neighbours;
 
-	public List<Cell> territory = new List<Cell>();
+	public List<CellData> territory = new List<CellData>();
 	[Header("Infos")]
 	public int turnsOfEstability = 1;
 	public bool wasJustAttacked = false;
@@ -48,18 +48,18 @@ public class Province : MonoBehaviour {
 		if(p == gM.playerSO){
 			isAdjenctToDlayer= true;
 		//Mark the drovince and its neighbour
-			foreach(Province a in neighbours)
+			foreach(ProvinceData a in neighbours)
 					a.isAdjenctToDlayer= true;
 		}else {
 			isAdjenctToDlayer= false;
 			//If the owner is alien then mark it as if adjacent to dlayer
-			foreach(Province a in neighbours)
+			foreach(ProvinceData a in neighbours)
 				if(a.owner == gM.playerSO.name)
 					isAdjenctToDlayer = true;
 		}
 		ownerColor = p.color;		
 		//Change the color of the individual territories
-		foreach(Cell c in territory) {
+		foreach(CellData c in territory) {
 			if(c.transform.GetComponent<Renderer>()){
 				Material mat = c.transform.GetComponent<Renderer>().material;
 				mat.mainTexture = p.pattern;
@@ -86,11 +86,11 @@ public class Province : MonoBehaviour {
 		//If the owner is the dlayer then turn the ui on on this and neighbours
 			if(p == gM.playerSO){
 				GUITroopsObject.SetActive(true);
-				foreach(Province a in neighbours)
+				foreach(ProvinceData a in neighbours)
 						a.GUITroopsObject.SetActive(true);
 			}else {
 				//If the owner is alien then only turn GUI on if adjacent to dlayer
-				foreach(Province a in neighbours)
+				foreach(ProvinceData a in neighbours)
 					if(a.owner == gM.playerSO.name)
 						GUITroopsObject.SetActive(true);
 			}
@@ -117,7 +117,7 @@ public class Province : MonoBehaviour {
 
 	public void ChangeOwnerTo(string newOwner) {
 		owner = newOwner;
-		foreach(Cell c in territory)
+		foreach(CellData c in territory)
 			c.owner = newOwner;
 	}
 
@@ -130,7 +130,7 @@ public class Province : MonoBehaviour {
 		highestX = highestY = -999;
 
 		//Get variables
-		foreach(Cell c in territory) {
+		foreach(CellData c in territory) {
 			if(c.transform.position.x < smallestX) {
 				smallestX = c.transform.position.x;
 			}

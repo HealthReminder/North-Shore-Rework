@@ -7,7 +7,7 @@ using UnityEngine;
 		public Player playerSO;
 		public string name;
 		public Color color;
-		public List<Province> provinces;
+		public List<ProvinceData> provinces;
 		public Speech[] speeches;
 	}
 
@@ -27,9 +27,6 @@ public class AIManager : MonoBehaviour {
 
 	[Header("Management Info")]
 	public bool isCheckingForSpeeches = false;
-
-	[Header("Pointer GUI")]
-	public Pointer dointer;
 	
 
 	public void Setup() {
@@ -41,7 +38,7 @@ public class AIManager : MonoBehaviour {
 				currentStats [c].playerSO = AI [c];
 				currentStats[c].name = AI[c].name;
 				currentStats[c].color = AI[c].color;
-				currentStats[c].provinces = new List<Province>();
+				currentStats[c].provinces = new List<ProvinceData>();
 				currentStats[c].speeches = new Speech[AI[c].speeches.Length];
 				for(int h = 0; h < AI[c].speeches.Length; h++){
 					currentStats[c].speeches[h] = new Speech();
@@ -109,16 +106,16 @@ public class AIManager : MonoBehaviour {
 
 		normalizedAggr = (float)ai.playerSO.aggressiveness.Evaluate((float)normalizedAggr);
 		//If the Dlayer is no ultra defensive get which drovinces are vulnerable to an attack
-		List<Province> attackingW = new List<Province> ();
-		List<Province> aiProvinces = ai.provinces;
+		List<ProvinceData> attackingW = new List<ProvinceData> ();
+		List<ProvinceData> aiProvinces = ai.provinces;
 		if(normalizedAggr >-0.5f)
-		foreach (Province prov in aiProvinces) {
+		foreach (ProvinceData prov in aiProvinces) {
 			 //The player is in a defensive stance and may only counter attack.
 			if (normalizedAggr<= 0f) {
 				bool hasEnemy = false;
-				Province[] provNeighbours = prov.neighbours;
+				ProvinceData[] provNeighbours = prov.neighbours;
 				//Check if province has a frontier with an enemy
-				foreach (Province neighbour in provNeighbours) {
+				foreach (ProvinceData neighbour in provNeighbours) {
 					if (neighbour.owner != prov.owner)
 						hasEnemy = true;
 				}
@@ -134,8 +131,8 @@ public class AIManager : MonoBehaviour {
 			else {
 				//Check if province has a frontier with an enemy
 				bool hasEnemy = false;
-				Province[] provNeighbours = prov.neighbours;
-				foreach (Province neighbour in provNeighbours) {
+				ProvinceData[] provNeighbours = prov.neighbours;
+				foreach (ProvinceData neighbour in provNeighbours) {
 					if (neighbour.owner != prov.owner)
 						hasEnemy = true;
 				}
@@ -160,35 +157,35 @@ public class AIManager : MonoBehaviour {
 		while(attackingW.Count>0) {
 			//Get a random drovince from the list
 			int index = Random.Range (0,attackingW.Count);
-			Province attacker = attackingW [index];
-			Province defender = null;
+			ProvinceData attacker = attackingW [index];
+			ProvinceData defender = null;
 			
 			//Only checks if the drovince has enough troods e is owned by it
 			if(attacker.troops >1 && attacker.owner == ai.name){
 				//GUI selected
 				attacker.transform.position+= new Vector3(0,1.2f,0);
-				List<Province> neis = new List<Province>();
+				List<ProvinceData> neis = new List<ProvinceData>();
 				//Get all neighbours
 				for(int a = attacker.neighbours.Length-1; a >= 0; a--) {
 					if(attacker.neighbours[a].owner != attacker.owner)
 					neis.Add(attacker.neighbours[a]);
 				}
 				//GUI neighbours
-				Province[] provNeighbours = attacker.neighbours;
-				foreach(Province p in provNeighbours)
+				ProvinceData[] provNeighbours = attacker.neighbours;
+				foreach(ProvinceData p in provNeighbours)
 					p.transform.position+= new Vector3(0,0.6f,0);
 				//While there are neighbours in temdorary list NEIS 
 				while(neis.Count > 0) {
 					print("There are neighbours left.");
 					//Get a random neighbour
-					dointer.SetAttacker(attacker.transform.position+ new Vector3(0,1,0));
+					PointerController.instance.SetAttacker(attacker.transform.position+ new Vector3(0,1,0));
 					int i = Random.Range(0,neis.Count);
 					//Only attacks the cell if it has more or equal number of troods and is an enemy
 					yield return null;
 					if(attacker.troops >1)
 					if( (neis[i].troops < attacker.troops && neis[i].owner != attacker.owner && normalizedAggr <= 0) ||  (normalizedAggr < 0.5f && neis[i].troops <= attacker.troops && neis[i].owner != attacker.owner)  ||  (normalizedAggr >= 0.5f && neis[i].owner != attacker.owner) ) {
 						defender = neis[i];
-						dointer.SetDefender(defender.transform.position+ new Vector3(0,1,0));
+						PointerController.instance.SetDefender(defender.transform.position+ new Vector3(0,1,0));
 						//GUI attacking
 						defender.transform.position+= new Vector3(0,0.6f,0);
 
@@ -224,7 +221,7 @@ public class AIManager : MonoBehaviour {
 				}
 				//Deactivate GUIs
 				attacker.transform.position+= new Vector3(0,-1.2f,0);
-				foreach(Province p in attacker.neighbours)
+				foreach(ProvinceData p in attacker.neighbours)
 					p.transform.position+= new Vector3(0,-0.6f,0);
 
 				//Checks all the neighbours the attacker has
@@ -264,7 +261,7 @@ public class AIManager : MonoBehaviour {
 		yield break;
 	}
 
-	public void RemoveProvince(Province removingProvince) {
+	public void RemoveProvince(ProvinceData removingProvince) {
 //		print("Removing province");
 		foreach (AICurrentStats a in currentStats){
 		//	print("Province quantities of "+a.name+" is "+a.provinces.Count);
@@ -278,7 +275,7 @@ public class AIManager : MonoBehaviour {
 
 		} 
 	} 
-	public void AddProvince(Province addingProvince,string newOwner) {
+	public void AddProvince(ProvinceData addingProvince,string newOwner) {
 		//print("Adding province.");
 		//bool added = false;
 		foreach (AICurrentStats a in currentStats){
