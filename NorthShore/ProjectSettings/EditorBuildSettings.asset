@@ -12,9 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/TestingMap.unity
     guid: 3d1705b57406a564dbb8e4e1f545dedf
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
+    path: Assets/_Scenes/MainMenu.unity
     guid: e56ce7f74e8a68d4ab00ba22fbe20b1b
   - enabled: 1
-    path: Assets/Scenes/initializedGame.unity
+    path: Assets/_Scenes/initializedGame.unity
     guid: a24acbdaa97d3d74db04fac46e2e3c3e
   m_configObjects: {}
