@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8447840623983662843
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8447840623983662844}
+  - component: {fileID: 8447840623983662845}
+  m_Layer: 0
+  m_Name: SoundtrackManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8447840623983662844
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8447840623983662843}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 204.05623, y: 389.24808, z: 11.81967}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8447840623983662845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8447840623983662843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca8dccca73380ce45bd2ffd16af3eca3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundtrackVolume: 1
+  sourceQuantity: 10
+  volumeRate: 0.01
+  sets:
+  - name: Intro
+    tracks:
+    - clip: {fileID: 8300000, guid: a104f52ff1dc22d4780e3b71d5a7694e, type: 3}
+      startFrom: 0
+  - name: Crescent
+    tracks:
+    - clip: {fileID: 8300000, guid: 523286b93bceb584a9c910fa0100f015, type: 3}
+      startFrom: 17
+  - name: Struggle
+    tracks:
+    - clip: {fileID: 8300000, guid: 9191a05b4d5608048b01afd7b40919dd, type: 3}
+      startFrom: 0
+  - name: Winning
+    tracks:
+    - clip: {fileID: 8300000, guid: 6be8792cd0f26fe48b557d2f6cc6552b, type: 3}
+      startFrom: 0
+  - name: Intense
+    tracks:
+    - clip: {fileID: 8300000, guid: f15bab6f202524a4b9f6ca05fb01aa35, type: 3}
+      startFrom: 0

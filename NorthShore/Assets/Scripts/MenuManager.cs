@@ -20,7 +20,7 @@ public class MenuManager : MonoBehaviour {
 	[Header("Dlayer")]
 	public Image dlayerColor;
 	public Slider dlayerColorSlider;
-	public Player dlayerSO;
+	public PlayerInfo dlayerSO;
 	public void ReloadScene() {
 		UpdateUI();
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);

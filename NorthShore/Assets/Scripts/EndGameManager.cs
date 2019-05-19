@@ -16,11 +16,6 @@ public class EndGameManager : MonoBehaviour {
 	public GameManager gM;
 	public int provinceQuantity;
 
-	OSTManager ostMan;
-	void  Start()
-	{
-		 ostMan = FindObjectOfType<OSTManager>();
-	}
 	public void CheckGameState (List<AICurrentStats> players) {
 		bool somethingHappened = false;
 		foreach(AICurrentStats a in players) {
@@ -35,7 +30,7 @@ public class EndGameManager : MonoBehaviour {
 						somethingHappened = true;
 						//Player lost
 						StartCoroutine(PlayerLose());
-						ostMan.ChangeTrack("Reflection");
+						SoundtrackManager.instance.ChangeSet("Intro");
 					}
 				}
 			}

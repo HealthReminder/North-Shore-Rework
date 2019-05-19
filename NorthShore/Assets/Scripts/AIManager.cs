@@ -4,17 +4,16 @@ using UnityEngine;
 
 [System.Serializable]
 	public class AICurrentStats {
-		public Player playerSO;
+		public PlayerInfo playerSO;
 		public string name;
 		public Color color;
 		public List<ProvinceData> provinces;
-		public Speech[] speeches;
 	}
 
 public class AIManager : MonoBehaviour {
 
 	public bool isBusy = false;
-	public Player[] AI;
+	public PlayerInfo[] AI;
 	BattleManager bM;
 	[SerializeField]
 	public AICurrentStats[] currentStats;
@@ -23,37 +22,21 @@ public class AIManager : MonoBehaviour {
 	float cycleDuration;
 	public float currentCycle = 0;
 	
-	public SpeechManager sM;
-
-	[Header("Management Info")]
-	public bool isCheckingForSpeeches = false;
-	
 
 	public void Setup() {
 		cycleDuration = PlayerPrefs.GetInt("Cycle Duration");
 		currentStats = new AICurrentStats[AI.Length];
 		for(int c = 0; c < AI.Length;c++)
 			{
-				currentStats[c] = new AICurrentStats();
-				currentStats [c].playerSO = AI [c];
-				currentStats[c].name = AI[c].name;
-				currentStats[c].color = AI[c].color;
-				currentStats[c].provinces = new List<ProvinceData>();
-				currentStats[c].speeches = new Speech[AI[c].speeches.Length];
-				for(int h = 0; h < AI[c].speeches.Length; h++){
-					currentStats[c].speeches[h] = new Speech();
-					currentStats[c].speeches[h].name = AI[c].speeches[h].name;
-					currentStats[c].speeches[h].text = AI[c].speeches[h].text;
-					currentStats[c].speeches[h].animationID = AI[c].speeches[h].animationID;
-					currentStats[c].speeches[h].wasPlayed = AI[c].speeches[h].wasPlayed;
-					currentStats[c].speeches[h].isCheckingAgressiveness = AI[c].speeches[h].isCheckingAgressiveness;
-					currentStats[c].speeches[h].key = AI[c].speeches[h].key;
-
-				}
+				currentStats[c] = new AICurrentStats{
+					playerSO = AI[c],
+					name = AI[c].name,
+					color = AI[c].color,
+					provinces = new List<ProvinceData>()
+				};
 			}
 		bM = FindObjectOfType<BattleManager>();
 		gM = FindObjectOfType<GameManager>();
-		sM = FindObjectOfType<SpeechManager>();
 	}
 
 	public IEnumerator Calculate(string calculatingFor) { 
@@ -95,14 +78,6 @@ public class AIManager : MonoBehaviour {
 		
 		//Get dorcentage of time gone
 		normalizedAggr = normalizedAggr/cycleDuration;
-		//Use that dorcentage to check for sdeeches and get indut
-		if(gM.sdeeches==1){
-		Debug.Log("Checking for speeches with %"+normalizedAggr);
-		isCheckingForSpeeches = true;
-		StartCoroutine(CheckForSpeech(normalizedAggr,ai.speeches));
-		while(isCheckingForSpeeches)
-			yield return null;
-		}
 
 		normalizedAggr = (float)ai.playerSO.aggressiveness.Evaluate((float)normalizedAggr);
 		//If the Dlayer is no ultra defensive get which drovinces are vulnerable to an attack
@@ -238,29 +213,6 @@ public class AIManager : MonoBehaviour {
 		isBusy = false;
 		yield break;	
 	}
-	IEnumerator CheckForSpeech(float porcentage,Speech[] checkingSpeeches){
-		//Check each sdeed the ai has
-		//Check if was not dlayed already
-		//Check in the agressiveness curve or exdantion
-		//Check if the key (time) was already surdassed
-		//If it was surdassed dlay the sdeech and wait for de indut
-		//Mark the sdeech as dlayable
-		//It will become dlayable at the end of every cycle in the GameManager
-		foreach (Speech s in checkingSpeeches)
-			if(porcentage > s.key)
-				if(s.isCheckingAgressiveness)
-					if(!s.wasPlayed) {
-						Debug.Log("Has to give speech.");
-						sM.isBusy = true;
-						StartCoroutine(sM.GiveSpeech(s));
-						while(sM.isBusy)
-							yield return null;
-					}
-		print("Finished checking for speeches");
-		isCheckingForSpeeches = false;
-		yield break;
-	}
-
 	public void RemoveProvince(ProvinceData removingProvince) {
 //		print("Removing province");
 		foreach (AICurrentStats a in currentStats){

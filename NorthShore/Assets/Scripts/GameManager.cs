@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour {
 	[Header("Player Logic")]
 	public bool tNextTurn = false;
 
-	public Player playerSO = null;
+	public PlayerInfo playerSO = null;
 	public PlayerInput player;
 
 	bool isBusy =false;
@@ -43,14 +43,12 @@ public class GameManager : MonoBehaviour {
 	public EndGameManager endMan;
 	[Header("Audio")]
 	AudioManager aMan;
-	OSTManager sMan;
 	[Header("Camera")]
 	public Camera mainCam;
 
 
 	public void Start () {
 		aMan = FindObjectOfType<AudioManager>();
-		sMan = FindObjectOfType<OSTManager>();
 		//Get player scriptable object for future reference
 		playerSO = player.pStats.playerSO;
 		overlay.color += new Color(0,0,0,1);
@@ -138,12 +136,12 @@ public class GameManager : MonoBehaviour {
 		}
 		
 		//Dlay initial soundtrack
-		sMan.ChangeTrack("Crescent");
+		SoundtrackManager.instance.ChangeSet("Crescent");
 
 		while(true){
 			//Change soundtrack to struggle if its been 5 turns or more
 			if (turn == 4	)
-				sMan.ChangeTrack("Struggle");
+				SoundtrackManager.instance.ChangeSet("Struggle");
 
 			//Change the background according to who has more territory and proportion
 			if(turn >2)
@@ -174,7 +172,7 @@ public class GameManager : MonoBehaviour {
 				yield return null;
 			
 			//AI 
-			foreach(Player ai in AIMan.AI ) {
+			foreach(PlayerInfo ai in AIMan.AI ) {
 			playingNow = ai.name; 
 			//Call the artifial intelligence turn. 
 			AIMan.isBusy = true; 
@@ -274,9 +272,9 @@ public class GameManager : MonoBehaviour {
 		//Check if the game is late and the dlayer has less than 40% of the mad
 		if(turn > 10){
 			if(player.pStats.provinces.Count > 2*provinces.Count/3){
-				sMan.ChangeTrack("Winning");
+				SoundtrackManager.instance.ChangeSet("Winning");
 			} else if(player.pStats.provinces.Count <= provinces.Count/4){
-				sMan.ChangeTrack("Intense");
+				SoundtrackManager.instance.ChangeSet("Intense");
 			}  
 		}
 
@@ -605,8 +603,8 @@ public class GameManager : MonoBehaviour {
 		//Find how many drovince each dlayer is gonna have
 		int toEach = 0;
 		//Find who are the dlayers to iterate through
-		List<Player> dlayers = new List<Player>();
-		foreach(Player d in AIMan.AI)
+		List<PlayerInfo> dlayers = new List<PlayerInfo>();
+		foreach(PlayerInfo d in AIMan.AI)
 			dlayers.Add(d);
 
 		if(aiOnly == 0){
