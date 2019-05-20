@@ -58,15 +58,15 @@
      <Compile Include="Assets\Scripts\BattleManager.cs" />
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\CellData.cs" />
-     <Compile Include="Assets\Scripts\ChangeYOffset.cs" />
      <Compile Include="Assets\Scripts\EndGameManager.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
-     <Compile Include="Assets\Scripts\GameModeSelectionManager.cs" />
      <Compile Include="Assets\Scripts\MenuManager.cs" />
+     <Compile Include="Assets\Scripts\MovingTextureBehaviour.cs" />
      <Compile Include="Assets\Scripts\PlayerInput.cs" />
      <Compile Include="Assets\Scripts\PointerController.cs" />
      <Compile Include="Assets\Scripts\ProvinceData.cs" />
      <Compile Include="Assets\Scripts\Reworked\ButtonBehaviour.cs" />
+     <Compile Include="Assets\Scripts\Reworked\GameModeSelectionManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\PlayerInfo.cs" />
      <Compile Include="Assets\Scripts\Reworked\SoundtrackManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\SupportDevelopersBehaviour.cs" />

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChangeYOffset : MonoBehaviour {
+public class MovingTextureBehaviour : MonoBehaviour {
 // Scroll main texture based on time
 
      public float scrollSpeed = 0.5f;
