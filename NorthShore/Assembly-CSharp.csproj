@@ -60,7 +60,6 @@
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\PlayerInput.cs" />
      <Compile Include="Assets\Scripts\PlayerView.cs" />
-     <Compile Include="Assets\Scripts\PointerController.cs" />
      <Compile Include="Assets\Scripts\ProvinceData.cs" />
      <Compile Include="Assets\Scripts\Reworked\AudioManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\ButtonBehaviour.cs" />

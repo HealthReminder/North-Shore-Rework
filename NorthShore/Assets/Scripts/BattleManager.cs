@@ -145,7 +145,7 @@ public class BattleManager : MonoBehaviour {
 
 		//while(!Input.anyKey)
 		//	yield return null;
-		PointerController.instance.Clear();
+		PlayerView.instance.Clear();
 		
 		battleCanvas.SetActive(false);
 //		print("Done.");

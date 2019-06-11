@@ -93,7 +93,7 @@ public class PlayerInput : MonoBehaviour {
 							//Only selects the clicked cell if it has more than 1 troop.
 							if(province.troops >1){
 								attacker = province;
-								PointerController.instance.SetAttacker(hit.point+ new Vector3(0,1,0));
+								PlayerView.instance.SetAttacker(hit.point+ new Vector3(0,1,0));
 								attacker.transform.position+= new Vector3(0,1.2f,0);
 								foreach(ProvinceData p in attacker.neighbours)
 									p.transform.position+= new Vector3(0,0.6f,0);
@@ -112,7 +112,7 @@ public class PlayerInput : MonoBehaviour {
 								foreach(ProvinceData p in attacker.neighbours)
 									if(p == province){
 										defender = province;
-										PointerController.instance.SetDefender(hit.point+ new Vector3(0,1,0));
+										PlayerView.instance.SetDefender(hit.point+ new Vector3(0,1,0));
 										defender.transform.position+= new Vector3(0,0.6f,0);
 										StartCoroutine(CallAttack());
 									}		
