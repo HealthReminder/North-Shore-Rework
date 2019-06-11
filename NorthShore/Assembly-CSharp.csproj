@@ -54,7 +54,6 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\AIManager.cs" />
-     <Compile Include="Assets\Scripts\AudioManager.cs" />
      <Compile Include="Assets\Scripts\BattleManager.cs" />
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\CellData.cs" />
@@ -65,25 +64,26 @@
      <Compile Include="Assets\Scripts\PlayerInput.cs" />
      <Compile Include="Assets\Scripts\PointerController.cs" />
      <Compile Include="Assets\Scripts\ProvinceData.cs" />
+     <Compile Include="Assets\Scripts\Reworked\AudioManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\ButtonBehaviour.cs" />
      <Compile Include="Assets\Scripts\Reworked\GameModeSelectionManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\PlayerInfo.cs" />
      <Compile Include="Assets\Scripts\Reworked\SoundtrackManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\SupportDevelopersBehaviour.cs" />
  <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+ <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/NorthShore/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.PackageManagerUI.Editor">
- <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+ <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/NorthShore/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.CollabProxy.Editor">
- <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+ <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/NorthShore/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro">
- <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+ <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/NorthShore/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.DataPrivacy">
- <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
+ <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/NorthShore/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.3f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

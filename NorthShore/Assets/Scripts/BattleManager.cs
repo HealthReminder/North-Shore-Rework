@@ -32,7 +32,7 @@ public class BattleManager : MonoBehaviour {
 		//Calculate dice rolls
 		//if(attacker.owner == "Player")
 		if(defender.isAdjenctToDlayer){
-			aMan.PlayTrack("warSounds");
+			aMan.PlayTrack("Player_Shots");
 		yield return new WaitForSeconds(0.15f);}
 
 		if(!isFastMode && attacker.isAdjenctToDlayer)

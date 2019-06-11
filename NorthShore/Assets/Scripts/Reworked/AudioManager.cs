@@ -5,21 +5,17 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour {
 
-	[HideInInspector]
-	public static AudioManager instance;
+	[HideInInspector]	public static AudioManager instance;
 	public AnimationCurve rollofCurve;
 	public int sourceQuantity;
-	public int currentSource = 0;
 	
-	string testingNow = "";
+	[SerializeField]	public List<Track> tracks;
+
+	int currentSource = 0;
 
 	AudioSource[] sources;
-	[SerializeField]
-	public List<Track> tracks;
-	//public bool playing;
 
-	[System.Serializable]
-	public class Track {
+	[System.Serializable]	public class Track {
 		public string name;
 		[Range(0,3)]
 		public float volume = 1;
@@ -28,7 +24,7 @@ public class AudioManager : MonoBehaviour {
 		public AudioClip track;
 		
 		[Header("Clipping")]
-		public Vector2 startFrom;
+		public Vector2 randomStart;
 		public float playFor = 0;
 	}
 
@@ -54,38 +50,28 @@ public class AudioManager : MonoBehaviour {
 			
 
 	}
-
-	void Update() {
-		if(Input.GetKeyDown(KeyCode.O))
-			PlayTrack(testingNow);
-	}
-
 	public void PlayTrack(string name){
-		//DISABLED FOR NOW 
-		//if( true == false ){
 		if(name != null && name!= "") {
 			Track currentTrack = tracks[0];
 			foreach(Track s in tracks) {
 				if(s.name == name)
 					currentTrack = s;
 			}
-			StartCoroutine(Play(currentTrack.track,currentTrack.pitch,currentTrack.volume,currentTrack.startFrom,currentTrack.playFor));
-		}
-
-		//}
-		
+			StartCoroutine(Play(currentTrack.track,currentTrack.pitch,currentTrack.volume,currentTrack.randomStart,currentTrack.playFor));
+		}		
 	}
 
-	IEnumerator Play(AudioClip s, float pitch, float volume, Vector2 startFrom, float playFor) {
-		sources[currentSource].pitch = pitch;
-		sources[currentSource].volume = volume;
-		sources[currentSource].clip = s;
-		sources[currentSource].time = Random.Range(startFrom.x,startFrom.y);
-		sources[currentSource].Play();
+	IEnumerator Play(AudioClip s, float pitch, float volume, Vector2 randomStart, float playFor) {
+		AudioSource curSrc = sources[currentSource];
+		curSrc.pitch = pitch;
+		curSrc.volume = volume;
+		curSrc.clip = s;
+		curSrc.time = Random.Range(randomStart.x*s.length,randomStart.y*s.length);
+		curSrc.Play();
 
 		AudioSource oldSource = null;
 		if(playFor != 0){
-			oldSource = sources[currentSource];
+			oldSource = curSrc;
 		}
 
 		currentSource++;
@@ -98,18 +84,10 @@ public class AudioManager : MonoBehaviour {
 			while(drog <= 1) {
 				drog+=Time.deltaTime*0.5f;
 				oldSource.volume = rollofCurve.Evaluate(drog);
-				//print(rollofCurve.Evaluate(drog) + " "+ drog);
 				yield return null;
 			}
 			oldSource.volume=0;
-			//oldSource.Stop();
-		}
-		
-
-
-		
-		
+		}		
 		yield break;
 	}
-
 }

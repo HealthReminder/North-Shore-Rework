@@ -3094,40 +3094,31 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.29682893
-      value: 0.44779605
-      inSlope: -4.7598934
-      outSlope: -4.7598934
+      time: 0.35099763
+      value: 0.4665491
+      inSlope: -5.0251155
+      outSlope: -5.0251155
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.40980545
+      inWeight: 0.15716434
       outWeight: 0.23349614
     - serializedVersion: 3
-      time: 0.5589736
-      value: 0.4329318
-      inSlope: 0.030186541
-      outSlope: 0.030186541
+      time: 0.57147056
+      value: 0.5516757
+      inSlope: 0.13962062
+      outSlope: 0.13962062
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.34072345
-      outWeight: 0.6578963
-    - serializedVersion: 3
-      time: 0.7515171
-      value: 0.092814
-      inSlope: -0.6737877
-      outSlope: -0.6737877
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.37276003
-      outWeight: 0.5546526
+      outWeight: 1
     - serializedVersion: 3
       time: 1
       value: 0.0062561035
-      inSlope: 0
-      outSlope: 0
+      inSlope: 0.4
+      outSlope: 0.4
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 0.5833905
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -3135,11 +3126,11 @@ MonoBehaviour:
   sourceQuantity: 10
   currentSource: 0
   tracks:
-  - name: warSounds
+  - name: Player_Shots
     volume: 0.5
     pitch: 1
     track: {fileID: 8300000, guid: 4524ed98caf328c43b0e0f6104dcb313, type: 3}
-    startFrom: {x: 0, y: 16}
+    randomStart: {x: 0, y: 0.5}
     playFor: 1
 --- !u!4 &1540072282
 Transform:
