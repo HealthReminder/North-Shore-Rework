@@ -15,28 +15,23 @@ public class PlayerInput : MonoBehaviour {
 	[SerializeField]
 	public AICurrentStats pStats;
 
-	[Header("Menu")]
-	public MenuManager menuMan;
 	ProvinceData lastHoveredProvince = null;
 
 	
 	 void Update() {
-		 if(wasInitialized){
-		if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Q)) {
-			menuMan.ToggleCameras();
-		}
-		if(Input.GetKeyDown(KeyCode.M)) {
-			if(Time.timeScale != 20){
-				FindObjectOfType<BattleManager>().isFastMode = true;
-				Time.timeScale = 20;
-				print(Time.timeScale);
-			} else {
-				FindObjectOfType<BattleManager>().isFastMode = false;
-				Time.timeScale = 1;
-				print(Time.timeScale);
+		if(wasInitialized){
+			if(Input.GetKeyDown(KeyCode.M)) {
+				if(Time.timeScale != 20){
+					FindObjectOfType<BattleManager>().isFastMode = true;
+					Time.timeScale = 20;
+					print(Time.timeScale);
+				} else {
+					FindObjectOfType<BattleManager>().isFastMode = false;
+					Time.timeScale = 1;
+					print(Time.timeScale);
+				}
+				
 			}
-			
-		}
 		
 		if(!isBusy){
 			//If the dlayer resses R the scene will load again

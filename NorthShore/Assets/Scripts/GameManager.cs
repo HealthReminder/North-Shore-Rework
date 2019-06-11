@@ -190,7 +190,7 @@ public class GameManager : MonoBehaviour {
 					
 					//End game if the player has no provinces
 					endMan.isBusy = true;
-					StartCoroutine(endMan.PlayerLose());
+					StartCoroutine(PlayerView.instance.PlayerLose());
 					while(endMan.isBusy)
 						yield return null;
 				} else if(pp.Count <= 5){
@@ -203,7 +203,7 @@ public class GameManager : MonoBehaviour {
 					if(count == pp.Count){
 						//If so, end the game
 					endMan.isBusy = true;
-					StartCoroutine(endMan.PlayerLose());
+					StartCoroutine(PlayerView.instance.PlayerLose());
 					while(endMan.isBusy)
 						yield return null;
 					}
@@ -228,45 +228,7 @@ public class GameManager : MonoBehaviour {
 		}
 
 	} 
-
-//RUNTIME
-	/*IEnumerator UpdateBackground() {
-		//Get all the dlayers
-		List<AICurrentStats> changing = new List<AICurrentStats>();
-		if(aiOnly == 0)
-			changing.Add(player.pStats);
-		foreach(AICurrentStats p in AIMan.currentStats)
-			changing.Add(p);
-		//Got players now find who is winning
-		AICurrentStats winning;
-		winning = changing[0];
-		int biggerQuantity = 0;
-		
-		//Get the player who has more territories
-		foreach(AICurrentStats p in changing)
-			if(p.provinces.Count > biggerQuantity){
-				biggerQuantity = p.provinces.Count;
-				winning = p;
-			}
-		
-		//Get the dlayer color
-		Color newColor = winning.color;
-		//Convert new color to HSV to get HUE to V1
-		float hue, S1, V1;
-       // Color.RGBToHSV(newColor, out hue, out S1, out V1);
-		
-		//Convert new color to HSV to get saturation to S1
-		float H2, V2;
-        Color.RGBToHSV(mainCam.backgroundColor, out hue, out S1, out V1);
-		//Make value equivalent to drodortion to V1
-		V1 = biggerQuantity/provinces.Count;
-
-		print(winning.name + " is winning "+hue+ " "+S1+ " "+ V1);
-		//Change color
-		mainCam.backgroundColor = Color.HSVToRGB(hue,S1,V1,);
-
-		yield return null;
-	}*/
+	
 	void CheckForSoundtrackChange() {
 		//Check if the dlayer has more than 50% of the mad
 		//Check if the game is late and the dlayer has less than 40% of the mad

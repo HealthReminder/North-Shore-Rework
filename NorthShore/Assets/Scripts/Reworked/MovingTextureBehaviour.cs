@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class MovingTextureBehaviour : MonoBehaviour {
 // Scroll main texture based on time
 
-     public float scrollSpeed = 0.5f;
-     Image rend;
+    public float scrollSpeed = 0.5f;
+    Image rend;
 
     void Start()
     {
