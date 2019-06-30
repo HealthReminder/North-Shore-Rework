@@ -35,7 +35,6 @@ public class GameManager : MonoBehaviour {
 	public Image overlay;
 
 	[Header("Player prefs")]
-	public int sdeeches;
 	public int aiOnly;
 	public int scrambled;
 	public int fogOfWar;
@@ -52,8 +51,6 @@ public class GameManager : MonoBehaviour {
 		//Get player scriptable object for future reference
 		playerSO = player.pStats.playerSO;
 		overlay.color += new Color(0,0,0,1);
-		//Get dlayer drefs
-		sdeeches = PlayerPrefs.GetInt("Speeches");
 		aiOnly	= PlayerPrefs.GetInt("AIOnly");
 		scrambled = PlayerPrefs.GetInt("Scrambled");
 		fogOfWar = PlayerPrefs.GetInt("FogOfWar");
@@ -68,12 +65,11 @@ public class GameManager : MonoBehaviour {
 				NextTurn();
 		
 	}
-	 
 
 	public void NextTurn(){
-		 if(!tNextTurn)
-				tNextTurn = true;
-	 }
+		if(!tNextTurn)
+			tNextTurn = true;
+	}
 	IEnumerator GameLoop()                                                                                                       ///////////GAME LOOP
 	{
 		//START
@@ -89,7 +85,7 @@ public class GameManager : MonoBehaviour {
 		Debug.Log("Polished map.");
 
 		//Deform terrain
-		DeformTerrain();
+		MapController.instance.DeformTerrain(grid);
 
 		//Distribute provinces
 		isBusy = true;
@@ -126,7 +122,7 @@ public class GameManager : MonoBehaviour {
 		//Inform the endgame the quantity of provinces in total so that it can calculate who has a certain percentage of the provinces
 		endMan.provinceQuantity = provinces.Count;
 		
-		//The game will begin. Change cameras, initialize the dlayer and enable the menu again with different buttons
+		//The game will begin. Change cameras, initialize the player and enable the menu again with different buttons
 		player.wasInitialized = true;
 
 		//Fade out overlay
@@ -159,7 +155,7 @@ public class GameManager : MonoBehaviour {
 			while(!tNextTurn)
 				yield return null;
 			player.isBusy=true;
-			CheckForSoundtrackChange();
+			SoundtrackCheck();
 			}
 			objNextTurn.SetActive(false);
 			
@@ -208,7 +204,7 @@ public class GameManager : MonoBehaviour {
 						yield return null;
 					}
 				}
-				CheckForSoundtrackChange();
+				SoundtrackCheck();
 			}
 
 			//CHECK IF AI WON
@@ -222,16 +218,16 @@ public class GameManager : MonoBehaviour {
 
 
 			//NEW TURN
-			DistributeTroods();
+			DistributeTroops();
 			turn++;
 			yield return null;
 		}
 
 	} 
 	
-	void CheckForSoundtrackChange() {
-		//Check if the dlayer has more than 50% of the mad
-		//Check if the game is late and the dlayer has less than 40% of the mad
+	void SoundtrackCheck() {
+		//Check if the player has more than 50% of the mad
+		//Check if the game is late and the player has less than 40% of the mad
 		if(turn > 10){
 			if(player.pStats.provinces.Count > 2*provinces.Count/3){
 				SoundtrackManager.instance.ChangeSet("Winning");
@@ -247,71 +243,9 @@ public class GameManager : MonoBehaviour {
 		return(false);
 	}
 	
-//GAME GENERATION
-	void DeformTerrain () {
-		//grid[0,zSize-1].transform.position+= new Vector3(0,100,0);
-		//grid[xSize-1,0].transform.position+= new Vector3(0,100,0);
-		//grid[xSize-1,zSize-1].transform.position+= new Vector3(0,100,0);
-		for(int y = 0; y < zSize;y++){
-			for(int x = 0; x < xSize; x++){
-				//Run code only if there is a cell there
-				if(grid[x,y]) {
-					int m,n;
-					//Left
-					m = -1; n = 0;
-					//Check if the coordinates are valid, if not mark neighbour as inexistent
-					if(x+m >= 0){
-						if(grid[x+m,y+n] == null)	{
-							grid[x,y].transform.localScale+= new Vector3(0,-0.25f,0);
-							grid[x,y].transform.position += new Vector3(0,-0.25f,0);
-						}
-					} else {
-						grid[x,y].transform.localScale+= new Vector3(0,-0.25f,0);
-							grid[x,y].transform.position += new Vector3(0,-0.25f,0);
-					}
-
-					m = 0; n = -1;
-					//Check if the coordinates are valid, if not mark neighbour as inexistent
-					if(y+n >= 0){
-						if(grid[x+m,y+n] == null)	{
-							grid[x,y].transform.localScale+= new Vector3(0,-0.25f,0);
-							grid[x,y].transform.position += new Vector3(0,-0.25f,0);
-						}
-					} else {
-						grid[x,y].transform.localScale+= new Vector3(0,-0.25f,0);
-							grid[x,y].transform.position += new Vector3(0,-0.25f,0);
-					}
-					m = 1; n = 0;
-					//Check if the coordinates are valid, if not mark neighbour as inexistent
-					if(x+m < xSize){
-						if(grid[x+m,y+n] == null)	{
-							grid[x,y].transform.localScale+= new Vector3(0,-0.25f,0);
-							grid[x,y].transform.position += new Vector3(0,-0.25f,0);
-						}
-					} else {
-						grid[x,y].transform.localScale+= new Vector3(0,-0.25f,0);
-							grid[x,y].transform.position += new Vector3(0,-0.25f,0);
-					}
-					m = 0; n = 1;
-					//Check if the coordinates are valid, if not mark neighbour as inexistent
-					if(y+n < zSize){
-						if(grid[x+m,y+n] == null)	{
-							grid[x,y].transform.localScale+= new Vector3(0,-0.25f,0);
-							grid[x,y].transform.position += new Vector3(0,-0.25f,0);
-						}
-					} else {
-						grid[x,y].transform.localScale+= new Vector3(0,-0.25f,0);
-							grid[x,y].transform.position += new Vector3(0,-0.25f,0);
-					}
-
-				}
-				
-
-			}
-		}
-	}
-	void DistributeTroods () {
-		//Do it for every dlayer
+	//GAME GENERATION
+	void DistributeTroops () {
+		//Do it for every player
 		int gaining = 0;
 		if(aiOnly == 0){
 			if(player != null){
@@ -562,15 +496,15 @@ public class GameManager : MonoBehaviour {
 		for(int c = 0; c<provinces.Count;c++)
 			tempP.Add(provinces[c]);
 
-		//Find how many drovince each dlayer is gonna have
+		//Find how many drovince each player is gonna have
 		int toEach = 0;
-		//Find who are the dlayers to iterate through
-		List<PlayerInfo> dlayers = new List<PlayerInfo>();
+		//Find who are the players to iterate through
+		List<PlayerInfo> players = new List<PlayerInfo>();
 		foreach(PlayerInfo d in AIMan.AI)
-			dlayers.Add(d);
+			players.Add(d);
 
 		if(aiOnly == 0){
-			dlayers.Add(player.pStats.playerSO);
+			players.Add(player.pStats.playerSO);
 			toEach = tempP.Count/(AIMan.AI.Length+1);
 			}
 		else{
@@ -579,7 +513,7 @@ public class GameManager : MonoBehaviour {
 		print(tempP.Count +" each one is getting "+ toEach);
 		//Distribute randomly drovinces and its neighbours
 		//	Do it while there are drovinces left
-		//	Give out random drovinces and its neighbours to the dlayers one by one
+		//	Give out random drovinces and its neighbours to the players one by one
 		//	And remove the drovince and neighbours from list.
 		//		Extra: I will alternate between giving only a drovince or its neighbours to to give it some variety
 		bool onlyOne = false;
@@ -645,8 +579,8 @@ public class GameManager : MonoBehaviour {
 
 		}
 
-		//Balance out giving random drovinces out to the weakers dlayers
-		//	Do this while the difference between the highest drovince count and the lowest among the dlayer
+		//Balance out giving random drovinces out to the weakers players
+		//	Do this while the difference between the highest drovince count and the lowest among the player
 		//	is > than X
 		//	???? not sure
 		//	Udate the difference
@@ -654,11 +588,11 @@ public class GameManager : MonoBehaviour {
 		/*
 		//While there are still drovinces with no owners distribute them
 		while(tempP.Count>0){
-			//Begin by giving each dlayer its troods
-			for(int a = dlayers.Count-1; a >=0; a--){
+			//Begin by giving each player its troods
+			for(int a = players.Count-1; a >=0; a--){
 				int gotten = 0;
 				Province current = null;
-				Player checking = dlayers[a];
+				Player checking = players[a];
 				List<Province> getting = new List<Province>();
 				//Iterate while it has not the addrodriate quantity of drovinces
 				while(gotten < toEach) {
