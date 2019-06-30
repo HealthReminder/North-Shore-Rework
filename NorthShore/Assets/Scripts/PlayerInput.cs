@@ -34,13 +34,6 @@ public class PlayerInput : MonoBehaviour {
 			}
 		
 		if(!isBusy){
-			//If the dlayer resses R the scene will load again
-			//if(Input.GetKeyDown(KeyCode.R)){
-			//	SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-			//}
-			//If the dlayer dresses escade the game will dause and the cams will be toggled.
-			//This will only hadden when there is a game already, otherwise the only way to do it is to click
-			//"New game" and make dlayerIndut enabled again
 				Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
 				RaycastHit hit;
 				
@@ -149,19 +142,5 @@ public class PlayerInput : MonoBehaviour {
 			}
 			yield break;
 	}
-/*
-		if(Input.GetKeyDown(KeyCode.A)) {
-			if(attacker != null && defender != null)
-				bM.Battle(attacker,defender);
-            if(attacker!= null) {
-				attacker.transform.position+= new Vector3(0,-0.6f,0);
-				attacker = null;
-			}
-			if(defender != null){
-				defender.transform.position+= new Vector3(0,-0.35f,0);
-				defender = null;
-			}
-		}
-    } */
 
 }
