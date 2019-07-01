@@ -7,11 +7,6 @@ public class GameManager : MonoBehaviour {
 
 	public string playingNow;
 	public int xSize,zSize;
-
-	[Header("Map Generation")]
-	public GameObject prefabBlock;
-	public GameObject prefabProvince;
-	Transform containerBoard;
 	Transform [,] grid;
 	[Header("Game Logic")]
 	public int turn=1;
@@ -25,8 +20,6 @@ public class GameManager : MonoBehaviour {
 
 	public PlayerInfo playerSO = null;
 	public PlayerInput player;
-
-	bool isBusy =false;
 	[Header("AI")]
 	public AIManager AIMan;
 	[Header("GUI")]
@@ -45,6 +38,7 @@ public class GameManager : MonoBehaviour {
 	[Header("Camera")]
 	public Camera mainCam;
 
+	public bool isWaitingRoutine = false;
 
 	public void Start () {
 		aMan = FindObjectOfType<AudioManager>();
@@ -72,73 +66,12 @@ public class GameManager : MonoBehaviour {
 	}
 	IEnumerator GameLoop()                                                                                                       ///////////GAME LOOP
 	{
-		//START
-		//Map generation
-		
-		isBusy = true;
-		containerBoard = new GameObject("Board").transform;
-		GenerateMap();
-		Debug.Log("Generated map.");
-
-		PolishCells (1);
-		PolishCells (2);
-		Debug.Log("Polished map.");
-
-		//Deform terrain
-		MapController.instance.DeformTerrain(grid);
-
-		//Distribute provinces
-		isBusy = true;
-		StartCoroutine(DistributeProvincesAmongCells());
-		while(isBusy)
-			yield return null;
-
-		Debug.Log("Distributed cell ownership.");
-
-		//Update provincialGUI
-		for(int i = provinces.Count-1; i >=0 ;i--) {
-			if(provinces[i].territory.Count<=0){
-				Destroy(provinces[i].gameObject);
-				provinces.RemoveAt(i);
-			}
-		}
-		
-		//Get neighbours
-		for(int i = provinces.Count-1; i >=0 ;i--) {
-			provinces[i].neighbours = GetNeighbours(provinces[i]);
-		}
-
-		//Distribute players
-		isBusy = true;
-		StartCoroutine(DistributePlayers());
-		while(isBusy)
-			yield return null;
-			
-		for(int i = provinces.Count-1; i >=0 ;i--) {
-			provinces[i].RecalculateGUIPosition();
-			provinces[i].UpdateGUI();
-			
-		}
-		//Inform the endgame the quantity of provinces in total so that it can calculate who has a certain percentage of the provinces
-		endMan.provinceQuantity = provinces.Count;
-		
-		//The game will begin. Change cameras, initialize the player and enable the menu again with different buttons
-		player.wasInitialized = true;
-
-		//Fade out overlay
-		while(overlay.color.a > 0){
-			overlay.color+= new Color(0,0,0,-1f*Time.deltaTime);
-			yield return null;
-		}
-		
-		//Dlay initial soundtrack
-		SoundtrackManager.instance.ChangeSet("Crescent");
+		yield return Setup();
 
 		while(true){
 			//Change soundtrack to struggle if its been 5 turns or more
-			if (turn == 4	)
+			if (turn == 4)
 				SoundtrackManager.instance.ChangeSet("Struggle");
-
 			//Change the background according to who has more territory and proportion
 			if(turn >2)
 			//StartCoroutine(UpdateBackground());
@@ -224,7 +157,61 @@ public class GameManager : MonoBehaviour {
 		}
 
 	} 
-	
+	IEnumerator Setup() {
+		//START
+		//Map generation
+		grid = MapController.instance.GenerateMap(xSize,zSize);
+		Debug.Log("Generated map of size "+grid.GetLength(0)+","+grid.GetLength(1));
+
+		MapController.instance.PolishCells (grid,1,xSize,zSize);
+		MapController.instance.PolishCells (grid,2,xSize,zSize);
+		Debug.Log("Polished map.");
+
+		//Deform terrain
+		MapController.instance.DeformTerrain(grid);
+
+		//Distribute provinces
+		provinces = new List<ProvinceData>();
+		yield return StartCoroutine(MapController.instance.DistributeProvincesAndCells(grid,provinces));
+
+		Debug.Log("Distributed cell ownership.");
+
+		//Update provincialGUI
+		for(int i = provinces.Count-1; i >=0 ;i--) {
+			if(provinces[i].territory.Count<=0){
+				Destroy(provinces[i].gameObject);
+				provinces.RemoveAt(i);
+			}
+		}
+		
+		//Get neighbours
+		for(int i = provinces.Count-1; i >=0 ;i--) {
+			provinces[i].neighbours = MapController.instance.GetNeighbours(provinces[i],grid,provinces);
+		}
+
+		//Distribute players
+		yield return StartCoroutine(DistributePlayers());
+		Debug.Log("Here1");
+		for(int i = provinces.Count-1; i >=0 ;i--) {
+			provinces[i].RecalculateGUIPosition();
+			provinces[i].UpdateGUI();
+			
+		}
+		//Inform the endgame the quantity of provinces in total so that it can calculate who has a certain percentage of the provinces
+		endMan.provinceQuantity = provinces.Count;
+		Debug.Log("Here2");
+		//The game will begin. Change cameras, initialize the player and enable the menu again with different buttons
+		player.wasInitialized = true;
+		SoundtrackManager.instance.ChangeSet("Crescent");
+		//Fade out overlay
+		while(overlay.color.a > 0){
+			overlay.color+= new Color(0,0,0,-1f*Time.deltaTime);
+			yield return null;
+		}
+		Debug.Log("Here3");
+		//Dlay initial soundtrack
+		yield break;
+	}
 	void SoundtrackCheck() {
 		//Check if the player has more than 50% of the mad
 		//Check if the game is late and the player has less than 40% of the mad
@@ -237,10 +224,6 @@ public class GameManager : MonoBehaviour {
 		}
 
 		
-	}
-	bool isGameEnded () {
-		
-		return(false);
 	}
 	
 	//GAME GENERATION
@@ -356,135 +339,6 @@ public class GameManager : MonoBehaviour {
 			*/
 	}                                                                                                    				   //////////////////GAME LOOP
 
-//GET NEIGHBOURS
-	ProvinceData[]	GetNeighbours(ProvinceData prov) {
-		List<ProvinceData> neighb = new List<ProvinceData>();
-
-		//Check every cell that is territory to the drovince you are studying
-		for(int i = 0 ;i < prov.territory.Count; i++) {
-			//Check only the territorys that are not null
-			if(prov.territory[i] != null){
-			//Check neighbouring cells
-			CellData checkingNow = null;
-			//Analyzing the one on the right
-			int aX =(int)prov.territory[i].coordinates.x+1;
-			int aY =(int)prov.territory[i].coordinates.y;
-			//Checking if it is valid
-			if(aX < xSize)
-			if(grid[aX,aY]){
-				//Make a reference to the cell
-				checkingNow = grid[aX,aY].GetComponent<CellData>();
-				//Check if it is owned by another drovince
-				if(checkingNow.province != prov.name) {
-					//print("The cell " + aX +" "+aY+" has a neighbour on " +aX+" "+aY +" called "+ checkingNow.province+" and is "+i+" "+prov.territory.Count);
-					//Comdare the name of the drovince owning the current tile you are checking
-					//To all the drovinces. When they match make a reference to it as alienDrovince
-					string provinceName = checkingNow.province;
-					ProvinceData alienProvince=null;
-					foreach(ProvinceData p in provinces) 
-						if(p.name == provinceName)
-							alienProvince = p;
-					
-					//Check if the alien drovince is not already a neighbour
-					bool newS = true;
-					foreach(ProvinceData p in neighb) 
-						if(p.name == provinceName)
-							newS = false;
-
-					//If it is not a neighbour already, add it to the list
-					if(newS)
-						if(alienProvince!= null)
-							neighb.Add(alienProvince);
-
-				}
-			}
-			aX =(int)prov.territory[i].coordinates.x-1;
-			aY =(int)prov.territory[i].coordinates.y;
-			if(aX >= 0)
-			if(grid[aX,aY]){
-				checkingNow = grid[aX,aY].GetComponent<CellData>();
-				if(checkingNow.province != prov.name) {
-					//print("The cell " + aX +" "+aY+" has a neighbour on " +aX+" "+aY +" called "+ checkingNow.province+" and is "+i+" "+prov.territory.Count);
-					string provinceName = checkingNow.province;
-					ProvinceData alienProvince=null;
-					foreach(ProvinceData p in provinces) 
-						if(p.name == provinceName)
-							alienProvince = p;
-					
-					bool newS = true;
-					foreach(ProvinceData p in neighb) 
-						if(p.name == provinceName)
-							newS = false;
-					
-					if(newS)
-						if(alienProvince!= null)
-							neighb.Add(alienProvince);
-
-				}
-			}
-			aX =(int)prov.territory[i].coordinates.x;
-			aY =(int)prov.territory[i].coordinates.y+1;
-			if(aY < zSize)
-			if(grid[aX,aY]){
-				checkingNow = grid[aX,aY].GetComponent<CellData>();
-				if(checkingNow.province != prov.name) {
-					//print("The cell " + aX +" "+aY+" has a neighbour on " +aX+" "+aY +" called "+ checkingNow.province+" and is "+i+" "+prov.territory.Count);
-					string provinceName = checkingNow.province;
-					ProvinceData alienProvince=null;
-					foreach(ProvinceData p in provinces) 
-						if(p.name == provinceName)
-							alienProvince = p;
-					
-					bool newS = true;
-					foreach(ProvinceData p in neighb) 
-						if(p.name == provinceName)
-							newS = false;
-					
-					if(newS)
-						if(alienProvince!= null)
-							neighb.Add(alienProvince);
-
-				}
-			}
-			aX =(int)prov.territory[i].coordinates.x;
-			aY =(int)prov.territory[i].coordinates.y-1;
-			if(aY >= 0)
-			if(grid[aX,aY]){
-				checkingNow = grid[aX,aY].GetComponent<CellData>();
-				if(checkingNow.province != prov.name) {
-					//print("The cell " + aX +" "+aY+" has a neighbour on " +aX+" "+aY +" called "+ checkingNow.province+" and is "+i+" "+prov.territory.Count);
-					string provinceName = checkingNow.province;
-					ProvinceData alienProvince=null;
-					foreach(ProvinceData p in provinces) 
-						if(p.name == provinceName)
-							alienProvince = p;
-					
-					bool newS = true;
-					foreach(ProvinceData p in neighb) 
-						if(p.name == provinceName)
-							newS = false;
-					
-					if(newS)
-						if(alienProvince!= null)
-							neighb.Add(alienProvince);
-
-				}
-			}
-		}
-		}
-
-		
-
-		ProvinceData[] endProvinces= new ProvinceData[neighb.Count];
-		string debug = "";
-		for(int a = 0; a < endProvinces.Length; a++){
-			endProvinces[a] = neighb[a];
-			debug+= neighb[a];
-		}
-
-		//Debug.Log(prov.name+" has "+ neighb.Count + ": "+ debug);
-		return (endProvinces);
-	}
  
 //PLAYER DISTRIBUTION
 	IEnumerator DistributePlayers() {
@@ -578,222 +432,7 @@ public class GameManager : MonoBehaviour {
 			yield return null;
 
 		}
-
-		//Balance out giving random drovinces out to the weakers players
-		//	Do this while the difference between the highest drovince count and the lowest among the player
-		//	is > than X
-		//	???? not sure
-		//	Udate the difference
-		
-		/*
-		//While there are still drovinces with no owners distribute them
-		while(tempP.Count>0){
-			//Begin by giving each player its troods
-			for(int a = players.Count-1; a >=0; a--){
-				int gotten = 0;
-				Province current = null;
-				Player checking = players[a];
-				List<Province> getting = new List<Province>();
-				//Iterate while it has not the addrodriate quantity of drovinces
-				while(gotten < toEach) {
-					//If it just started
-					if(current == null){
-					//Get a new current
-					current = tempP[Random.Range(0,tempP.Count)];
-					//If it is occudied try other ones
-						while(current.owner != ""){
-							current = tempP[Random.Range(0,tempP.Count)];
-							print("Drovince already has an owner, getting another one.");
-						}
-					} //If it has already chosen one before, iterate through its neighbours
-					else {
-						//Add the drovinces with no owners
-						List<Province> canGet = new List<Province>();
-						foreach(Province g in current.neighbours)
-							if(g.owner == "")
-								canGet.Add(g);
-						//If there are neighbours with no owners get a random one
-						if(canGet.Count>0)
-							current = canGet[Random.Range(0,canGet.Count)];
-						//If it still has an owner that means there were no neighbours available so choose another random one.
-						while(current.owner != ""){
-							current = tempP[Random.Range(0,tempP.Count)];
-							print("Drovince already has an owner, getting another one.");
-						}
-					}
-					//Remove the gotten drovince from the list.
-					for(int m = tempP.Count-1; m >=0 ; m--) {
-						if(tempP[m] == current)
-							tempP.RemoveAt(m);
-					}
-					getting.Add(current);
-					gotten++;
-					print("Added a drovince and removed it from the list.");
-					yield return null;
-				}
-
-
-			}
-			
-			yield return null;
-		} */
 		print("Finished.");
-		isBusy = false;
-		yield return null;
-	}
-
-	IEnumerator DistributeProvincesAmongCells()
-	{
-		
-		List<Vector3> points = new List<Vector3>();
-		int variation = Random.Range(-2,3);
-		int newX,newY;
-		newX = (int)Mathf.Sqrt(xSize)-1;
-		newY = (int)Mathf.Sqrt(zSize)-1;
-		for(int z = newY/2; z < zSize; z+=newY-1){
-			for(int x = newX/2; x < xSize; x+=newX-1){
-				variation = Random.Range(-2,3);
-				if((int)variation+x<xSize &&(int)variation+z<zSize&&(int)variation+x>=0&&(int)variation+z>=0)
-					if(grid[(int)variation+x,z+(int)variation])
-						points.Add(new Vector3((int)variation+x,0,z+(int)variation));
-			}
-		}
-		provinces = new List<ProvinceData>();
-		foreach(Vector3 v in points){
-			Transform obj = Instantiate(prefabProvince,v,Quaternion.identity).transform;
-			obj.parent = containerBoard;
-			ProvinceData province = obj.gameObject.GetComponent<ProvinceData>();
-			province.name = "Province "+ Random.Range(0,99)+""+ (int)Time.realtimeSinceStartup*10+""+ Random.Range(0,99)+province.GetInstanceID().ToString();
-			province.owner = "";
-			obj.name = province.name;
-			provinces.Add(province);
-		}
-
-		//Foreach block in the grid
-		for(int z = 0; z < zSize; z++){
-			for(int x = 0; x < xSize; x++){
-				if(grid[x,z])
-					if(grid[x,z].GetComponent<CellData>()){
-						CellData c = grid[x,z].GetComponent<CellData>();
-						float closestDist = 9999;
-						ProvinceData closestProvince = provinces[0];
-						//Calculate closest province to the block
-						foreach(ProvinceData p in provinces) {
-							float distance = Vector3.Distance(grid[x,z].position,p.transform.position);
-							if(distance <= closestDist){
-								closestDist = distance;
-								closestProvince = p;
-							}
-						}
-						//Change cell ownership and add to lists
-						c.owner = closestProvince.owner;
-						c.transform.parent = closestProvince.transform;
-						c.province = closestProvince.name;
-						closestProvince.territory.Add(c);
-
-					}
-			}
-		}
-
-		
-		isBusy = false;
-		yield return null;
-	}
-	
-
-
-//MAP GENERATION
-	void GenerateMap() {
-		grid = new Transform[xSize,zSize];
-		float seed = Random.Range(1f,999f);
-//		float xStretch;
-		float yStretch;
-		for(int z = 0; z < zSize; z++){
-			yStretch = Mathf.Lerp(0,1f,z*1f/((float)zSize+1));
-			//print(yStretch);
-			for(int x = 0; x < xSize; x++){
-				
-				
-				
-				float perlin = Mathf.PerlinNoise(( (float)x+seed)/( (float)xSize/5 ),( (float)z+seed)/( (float)zSize/3));
-				//print(z/(zSize));
-				//print(perlin);
-				perlin = perlin-yStretch;
-				//if(perlin > 0.4f&&perlin < 0.6f){
-				if(perlin > 0.05f+Random.Range(-0.04f,0.02f)){
-					Transform t = Instantiate(prefabBlock, new Vector3(x*1,0,z*1), Quaternion.identity).transform;
-					t.parent = containerBoard;
-					t.GetComponent<CellData>().coordinates = new Vector2(x,z);
-					grid[x,z] = t;
-					//UpdateCellAppearance(c);
-				} else {
-					grid[x,z] = null;
-				}
-				
-				
-				//print(grid[x,z]+" "+c.coordinates);
-			}
-		}
-	} 
-
-	void PolishCells(int minNeighbourQuantity) {
-		print ("Polishing cells for " + minNeighbourQuantity);
-		for(int z = 0; z < zSize; z++){
-			for(int x = 0; x < xSize; x++){
-				//Check the current x,y cell if it exists
-				if(grid[x,z]) {
-					int cX, cZ;
-					int qnt = 0;
-
-					//Get right neighbour
-					cX = x + 1;
-					cZ = z;
-					if (cX < xSize) {
-						if (grid [cX, cZ])
-							qnt++;
-					}
-
-					//Get left neighbour
-					cX = x - 1;
-					cZ = z;
-					if (cX >= 0) {
-						if (grid [cX, cZ])
-							qnt++;
-
-					}
-
-					//Get top neighbour
-					cX = x;
-					cZ = z+1;
-					if (cZ < zSize) {
-						if (grid [cX, cZ])
-							qnt++;
-
-					}
-
-
-					//Get bot neighbour
-					cX = x;
-					cZ = z-1;
-					if (cZ >= 0) {
-						if (grid [cX, cZ])
-							qnt++;
-
-					}
-
-					if (qnt < minNeighbourQuantity) {
-						Destroy (grid [x, z].gameObject);
-						grid [x, z] = null;
-					}
-				}
-
-
-
-
-			}
-		}
-
-	}
-	
-	
+		yield break;
+	}	
 }

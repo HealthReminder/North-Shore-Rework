@@ -5820,6 +5820,53 @@ Transform:
   m_Father: {fileID: 1673500013}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &764413364
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 764413366}
+  - component: {fileID: 764413365}
+  m_Layer: 0
+  m_Name: MapController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &764413365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 764413364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c145264b402fff946a7f0a406907f1e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabBlock: {fileID: 1850731648913150, guid: 560e7dc53d3d2c748be21a32a02e6773,
+    type: 3}
+  prefabProvince: {fileID: 1719070439023950, guid: 8d2f32509e6ccf647a326fdfb57a1efd,
+    type: 3}
+--- !u!4 &764413366
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 764413364}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 113.45703, y: 27.828125, z: 22.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &794800021
 GameObject:
   m_ObjectHideFlags: 0
@@ -6794,10 +6841,6 @@ MonoBehaviour:
   playingNow: 
   xSize: 100
   zSize: 100
-  prefabBlock: {fileID: 1850731648913150, guid: 560e7dc53d3d2c748be21a32a02e6773,
-    type: 3}
-  prefabProvince: {fileID: 1719070439023950, guid: 8d2f32509e6ccf647a326fdfb57a1efd,
-    type: 3}
   turn: 1
   provinces: []
   tNextTurn: 0
@@ -6806,7 +6849,6 @@ MonoBehaviour:
   AIMan: {fileID: 1673500014}
   objNextTurn: {fileID: 1120983527}
   overlay: {fileID: 1489474947}
-  sdeeches: 0
   aiOnly: 0
   scrambled: 0
   fogOfWar: 0

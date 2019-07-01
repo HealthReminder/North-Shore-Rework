@@ -917,7 +917,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b009e200d67e28a4fa11daff82b5b128, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  descriptionObject: {fileID: 224879739}
+  descriptionObject: {fileID: 0}
 --- !u!114 &616167364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1156,7 +1156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b009e200d67e28a4fa11daff82b5b128, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  descriptionObject: {fileID: 753246422}
+  descriptionObject: {fileID: 0}
 --- !u!114 &624003281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2881,7 +2881,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "If you would like \nto see more of this game\nshare\treview\tcomment\n!!!!"
+  m_Text: 'leave a review
+
+    to help creating this game!'
 --- !u!222 &1457961380
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2969,7 +2971,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e527930a4fcd864fae1f25069570d70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollSpeed: -1
+  scrollSpeed: 0.5
 --- !u!222 &1491392434
 CanvasRenderer:
   m_ObjectHideFlags: 0
