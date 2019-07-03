@@ -75,7 +75,7 @@ public class GameController : MonoBehaviour
 			//print("Attacker won.");
 		}
 		defender.turnsOfEstability = 0;
-		PlayerView.instance.Clear();
+		PlayerView.instance.Invoke("ClearBattleGUI",0.2f);
 		yield break;
 		
 	}

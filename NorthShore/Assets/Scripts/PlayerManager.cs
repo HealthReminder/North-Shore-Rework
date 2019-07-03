@@ -71,7 +71,7 @@ public class PlayerManager : MonoBehaviour {
 							//Only selects the clicked cell if it has more than 1 troop.
 							if(province.troops >1){
 								attacker = province;
-								PlayerView.instance.SetAttacker(hit.point+ new Vector3(0,1,0));
+								PlayerView.instance.SetAttacker(attacker.transform.position+ new Vector3(0,2,0));
 								attacker.transform.position+= new Vector3(0,1.2f,0);
 								foreach(ProvinceData p in attacker.neighbours)
 									p.transform.position+= new Vector3(0,0.6f,0);
@@ -85,15 +85,16 @@ public class PlayerManager : MonoBehaviour {
 								if(defender != null){
 									defender.transform.position+= new Vector3(0,-0.6f,0);
 									defender = null;
-								}
+								} else PlayerView.instance.ClearBattleGUI();	
 								//Only selects the defender if it has a neighbouring attacker (troops cannot go diagonally).
 								foreach(ProvinceData p in attacker.neighbours)
 									if(p == province){
 										defender = province;
-										PlayerView.instance.SetDefender(hit.point+ new Vector3(0,1,0));
+										PlayerView.instance.SetDefender(defender.transform.position+ new Vector3(0,2,0));
 										defender.transform.position+= new Vector3(0,0.6f,0);
 										StartCoroutine(CallAttack());
-									}		
+									}
+											
 							}
 						}
 

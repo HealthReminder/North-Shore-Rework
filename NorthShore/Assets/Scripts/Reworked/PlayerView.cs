@@ -10,8 +10,9 @@ public class PlayerView : MonoBehaviour
 	public GameObject nextTurnButtonObject;
 	public Image overlay;
 	[Header("Pointer View")]
-	public LineRenderer pointer_Line;
-	public Transform pointer_Defender,pointer_Attacker;
+	public LineRenderer battle_Line;
+	Vector3 battle_Defender,battle_Attacker;
+	public Transform battle_Target;
 
     [Header("Ending View")]
 	[SerializeField] Image ending_WinImg;
@@ -35,23 +36,24 @@ public class PlayerView : MonoBehaviour
 	}
 	#endregion
 	#region Pointer View
-	public void SetDefender(Vector3 newDos) {
-		pointer_Line.SetPosition(0,pointer_Attacker.transform.position);
-		pointer_Line.SetPosition(1,newDos);
-		pointer_Defender.position = newDos;
-		pointer_Defender.gameObject.SetActive(true);
-		pointer_Line.enabled=true;
+	public void SetDefender(Vector3 defenderPos) {
+		battle_Line.SetPosition(0,battle_Attacker);
+		battle_Line.SetPosition(1,defenderPos);
+		battle_Defender = defenderPos;
+		battle_Line.enabled=true;
+		battle_Target.position = defenderPos;
+		battle_Target.gameObject.SetActive(true);
 	}
-	public void SetAttacker(Vector3 newDos) {
-		Clear();
-		transform.position = newDos;
-		pointer_Attacker.gameObject.SetActive(true);
+	public void SetAttacker(Vector3 attackerPos) {
+		ClearBattleGUI();
+		battle_Attacker = attackerPos;
+		battle_Target.position = attackerPos;
+		battle_Target.gameObject.SetActive(true);
 		
 	}
-	public void Clear() {
-		pointer_Line.enabled=false;
-		pointer_Attacker.gameObject.SetActive(false);
-		pointer_Defender.gameObject.SetActive(false);
+	public void ClearBattleGUI() {
+		battle_Line.enabled = false;
+		battle_Target.gameObject.SetActive(false);
 	}
 	#endregion
     #region Ending View

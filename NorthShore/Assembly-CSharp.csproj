@@ -58,7 +58,6 @@
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\MapController.cs" />
      <Compile Include="Assets\Scripts\PlayerManager.cs" />
-     <Compile Include="Assets\Scripts\PlayerView.cs" />
      <Compile Include="Assets\Scripts\ProvinceData.cs" />
      <Compile Include="Assets\Scripts\Reworked\AudioManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\Behaviours\ButtonBehaviour.cs" />
@@ -67,6 +66,7 @@
      <Compile Include="Assets\Scripts\Reworked\CellData.cs" />
      <Compile Include="Assets\Scripts\Reworked\GameModeSelectionManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\PlayerInfo.cs" />
+     <Compile Include="Assets\Scripts\Reworked\PlayerView.cs" />
      <Compile Include="Assets\Scripts\Reworked\SoundtrackManager.cs" />
      <Compile Include="Assets\Scripts\Unused\CameraController.cs" />
      <Compile Include="Assets\Scripts\Unused\MenuManager.cs" />

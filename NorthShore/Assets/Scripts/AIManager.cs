@@ -137,14 +137,14 @@ public class AIManager : MonoBehaviour {
 				while(neis.Count > 0) {
 					print("There are neighbours left.");
 					//Get a random neighbour
-					PlayerView.instance.SetAttacker(attacker.transform.position+ new Vector3(0,1,0));
+					PlayerView.instance.SetAttacker(attacker.transform.position+ new Vector3(0,2,0));
 					int i = Random.Range(0,neis.Count);
 					//Only attacks the cell if it has more or equal number of troods and is an enemy
 					yield return null;
 					if(attacker.troops >1)
 					if( (neis[i].troops < attacker.troops && neis[i].owner != attacker.owner && normalizedAggr <= 0) ||  (normalizedAggr < 0.5f && neis[i].troops <= attacker.troops && neis[i].owner != attacker.owner)  ||  (normalizedAggr >= 0.5f && neis[i].owner != attacker.owner) ) {
 						defender = neis[i];
-						PlayerView.instance.SetDefender(defender.transform.position+ new Vector3(0,1,0));
+						PlayerView.instance.SetDefender(defender.transform.position+ new Vector3(0,2,0));
 						//GUI attacking
 						defender.transform.position+= new Vector3(0,0.6f,0);
 						yield return StartCoroutine(GameController.instance.Battle(attacker,defender));
