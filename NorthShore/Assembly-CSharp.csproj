@@ -53,8 +53,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\GameController.cs" />
      <Compile Include="Assets\Scripts\AIManager.cs" />
-     <Compile Include="Assets\Scripts\BattleManager.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\MapController.cs" />
      <Compile Include="Assets\Scripts\PlayerManager.cs" />

@@ -3,17 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+	public class PlayerData {
+		public PlayerInfo playerInfo;
+		//public string name;
+		//public Color color;
+		public List<ProvinceData> provinces;
+	}
 [System.Serializable] public struct WinCondition{
-	[Range(0.01f,1f)]
-	public float maxPercentage;
-
+	[Range(0.01f,1f)]	public float maxPercentage;
 }
 
 public class GameManager : MonoBehaviour {
 	[SerializeField] public WinCondition winCondition;
 
 	public string playingNow;
-	public int xSize,zSize;
+	public int mapSizeX,mapSizeY;
+	public PlayerManager playerManager;
 	Transform [,] grid;
 	[Header("Game Logic")]
 	public int turn=1;
@@ -22,12 +28,10 @@ public class GameManager : MonoBehaviour {
 	//[SerializableField]
 	public List<ProvinceData> provinces;
 
-	[Header("Player Logic")]
-	public bool nextTurnPlayerInput = false;
+	//[Header("Player Logic")]
+	[HideInInspector]public bool nextTurnPlayerInput = false;
 
-	public PlayerInfo playerSO = null;
-	public PlayerManager playerManager;
-
+	
 	[Header("AI")]
 	public AIManager AIMan;
 
@@ -35,17 +39,13 @@ public class GameManager : MonoBehaviour {
 	public int aiOnly;
 	public int scrambled;
 	public int fogOfWar;
-	[Header("Audio")]
-	AudioManager aMan;
-	[Header("Camera")]
-	public Camera mainCam;
 
-	public bool isWaitingRoutine = false;
-
+	public static GameManager instance;
+	private void Awake() {
+		instance = this;
+	}
 	public void Start () {
-		aMan = FindObjectOfType<AudioManager>();
 		//Get player scriptable object for future reference
-		playerSO = playerManager.pStats.playerSO;
 		PlayerView.instance.overlay.color += new Color(0,0,0,1);
 		aiOnly	= PlayerPrefs.GetInt("AIOnly");
 		scrambled = PlayerPrefs.GetInt("Scrambled");
@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour {
 			if(aiOnly == 0){
 				PlayerView.instance.OnPlayerTurn("OnStart");
 				playerManager.isBusy=false;
-				playingNow = playerManager.pStats.name;
+				playingNow = playerManager.playerData.playerInfo.name;
 				while(!nextTurnPlayerInput)
 					yield return null;
 				playerManager.isBusy=true;
@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour {
 			//AI TURN
 			foreach(PlayerInfo ai in AIMan.AI ) {
 				playingNow = ai.name; 
-				yield return StartCoroutine(AIMan.Calculate(ai.name )); 
+				yield return StartCoroutine(AIMan.Calculate(ai)); 
 			}
 
 			yield return CheckGameState(AIMan.currentStats);
@@ -103,11 +103,11 @@ public class GameManager : MonoBehaviour {
 	IEnumerator Setup() {
 		//START
 		//Map generation
-		grid = MapController.instance.GenerateMap(xSize,zSize);
+		grid = MapController.instance.GenerateMap(mapSizeX,mapSizeY);
 		Debug.Log("Generated map of size "+grid.GetLength(0)+","+grid.GetLength(1));
 
-		MapController.instance.PolishCells (grid,1,xSize,zSize);
-		MapController.instance.PolishCells (grid,2,xSize,zSize);
+		MapController.instance.PolishCells (grid,1,mapSizeX,mapSizeY);
+		MapController.instance.PolishCells (grid,2,mapSizeX,mapSizeY);
 		Debug.Log("Polished map.");
 
 		//Deform terrain
@@ -149,15 +149,15 @@ public class GameManager : MonoBehaviour {
 		//Dlay initial soundtrack
 		yield break;
 	}
-	public IEnumerator CheckGameState (AICurrentStats[] players) {
+	public IEnumerator CheckGameState (PlayerData[] players) {
 		if(turn <= 5)
 			yield break;
 		bool somethingHappened = false;
-		foreach(AICurrentStats a in players) {
+		foreach(PlayerData a in players) {
 			if(!somethingHappened){
-				print("Checking if "+a.name+" won with" +(float)a.provinces.Count/(float)provinces.Count);
+				print("Checking if "+a.playerInfo.name+" won with" +(float)a.provinces.Count/(float)provinces.Count);
 				if((float)a.provinces.Count/(float)provinces.Count >= winCondition.maxPercentage){
-					if(a.name == playerSO.name){
+					if(a.playerInfo == playerManager.playerData.playerInfo){
 						somethingHappened = true;
 						//Player won
 						StartCoroutine(PlayerView.instance.PlayerWin());
@@ -172,16 +172,16 @@ public class GameManager : MonoBehaviour {
 		}
 		if(aiOnly == 0){
 			//End game if the player has no provinces
-			if(playerManager.pStats.provinces.Count <=0){
+			if(playerManager.playerData.provinces.Count <=0){
 				yield return PlayerView.instance.PlayerLose();
-			} else if (playerManager.pStats.provinces.Count <= 5){
+			} else if (playerManager.playerData.provinces.Count <= 5){
 				//If player has only a few provinces for debugging porpouses 
 				int count = 0;
 				//Check if all its remaining provinces are owned by others players
-				foreach(ProvinceData k in playerManager.pStats.provinces)
-					if(k.owner != "Player")
+				foreach(ProvinceData k in playerManager.playerData.provinces)
+					if(k.owner != playerManager.playerData.playerInfo)
 						count++;
-				if(count == playerManager.pStats.provinces.Count){
+				if(count == playerManager.playerData.provinces.Count){
 					//If so, end the game
 					yield return PlayerView.instance.PlayerLose();
 				}
@@ -199,9 +199,9 @@ public class GameManager : MonoBehaviour {
 		if(turn == 4){
 			SoundtrackManager.instance.ChangeSet("Struggle");
 		} else if(turn > 10){
-			if(playerManager.pStats.provinces.Count > 2*provinces.Count/3){
+			if(playerManager.playerData.provinces.Count > 2*provinces.Count/3){
 				SoundtrackManager.instance.ChangeSet("Winning");
-			} else if(playerManager.pStats.provinces.Count <= provinces.Count/4){
+			} else if(playerManager.playerData.provinces.Count <= provinces.Count/4){
 				SoundtrackManager.instance.ChangeSet("Intense");
 			}  
 		}
@@ -218,7 +218,7 @@ public class GameManager : MonoBehaviour {
 				//Set current troods gain to 0
 				gaining = 0;
 				//Get new troods according to territory count
-				int derTerritory = playerManager.pStats.provinces.Count;
+				int derTerritory = playerManager.playerData.provinces.Count;
 				//Clamd it to the maximum troods a nation can get in its whole lands
 				if(scrambled == 0){
 				derTerritory = Mathf.Clamp(derTerritory,1,(6+(derTerritory/10)));
@@ -235,7 +235,7 @@ public class GameManager : MonoBehaviour {
 
 				//Distribute the troods to the heighest riority targets
 				List<ProvinceData> targets = new List<ProvinceData>();
-				foreach(ProvinceData d in playerManager.pStats.provinces) {
+				foreach(ProvinceData d in playerManager.playerData.provinces) {
 					int nC = 0;
 					foreach(ProvinceData a in d.neighbours)
 						if(a.owner != d.owner)
@@ -265,7 +265,7 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 		print("Here 2.");
-		foreach (AICurrentStats aIStats in AIMan.currentStats) {
+		foreach (PlayerData aIStats in AIMan.currentStats) {
 			if(aIStats != null){
 				//Set current troods gain to 0
 				gaining = 0;
@@ -322,7 +322,7 @@ public class GameManager : MonoBehaviour {
 			players.Add(d);
 
 		if(aiOnly == 0){
-			players.Add(playerManager.pStats.playerSO);
+			players.Add(playerManager.playerData.playerInfo);
 			toEach = tempP.Count/(AIMan.AI.Length+1);
 			}
 		else{
@@ -357,8 +357,8 @@ public class GameManager : MonoBehaviour {
 					}
 					//Add all the drovinces its getting change its owner and find it in tempP list
 					foreach(ProvinceData g in getting){
-						g.ChangeOwnerTo(playerManager.pStats.name);
-						playerManager.pStats.provinces.Add(g);
+						g.ChangeOwnerTo(playerManager.playerData.playerInfo);
+						playerManager.playerData.provinces.Add(g);
 						for(int k =tempP.Count-1; k >= 0 ; k--) 
 							if(tempP[k] == g)
 								tempP.RemoveAt(k);
@@ -384,7 +384,7 @@ public class GameManager : MonoBehaviour {
 					}
 					//Add all the drovinces its getting change its owner and find it in tempP list
 					foreach(ProvinceData g in getting){
-						g.ChangeOwnerTo(AIMan.AI[index].name);
+						g.ChangeOwnerTo(AIMan.AI[index]);
 						AIMan.currentStats[index].provinces.Add(g);
 						for(int k =tempP.Count-1; k >= 0 ; k--) 
 							if(tempP[k] == g)

@@ -2,47 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-	public class AICurrentStats {
-		public PlayerInfo playerSO;
-		public string name;
-		public Color color;
-		public List<ProvinceData> provinces;
-	}
-
 public class AIManager : MonoBehaviour {
 
 	public PlayerInfo[] AI;
-	BattleManager bM;
 	[SerializeField]
-	public AICurrentStats[] currentStats;
+	public PlayerData[] currentStats;
 	public GameManager gM;
 
 	float cycleDuration;
 	public float currentCycle = 0;
 	
-
+	public static AIManager instance;
+	private void Awake() {
+		instance = this;
+	}
 	public void Setup() {
 		cycleDuration = PlayerPrefs.GetInt("Cycle Duration");
-		currentStats = new AICurrentStats[AI.Length];
+		currentStats = new PlayerData[AI.Length];
 		for(int c = 0; c < AI.Length;c++)
 			{
-				currentStats[c] = new AICurrentStats{
-					playerSO = AI[c],
-					name = AI[c].name,
-					color = AI[c].color,
+				currentStats[c] = new PlayerData{
+					playerInfo = AI[c],
 					provinces = new List<ProvinceData>()
 				};
 			}
-		bM = FindObjectOfType<BattleManager>();
 		gM = FindObjectOfType<GameManager>();
 	}
 
-	public IEnumerator Calculate(string calculatingFor) { 
+	public IEnumerator Calculate(PlayerInfo currentAIInfo) { 
 		print("Called turn calculation.");
-		 AICurrentStats ai = currentStats[0]; 
-		 foreach(AICurrentStats a in currentStats) 
-		 if(a.name  == calculatingFor) ai = a;
+		 PlayerData ai = currentStats[0]; 
+		 foreach(PlayerData a in currentStats) 
+		 	if(a.playerInfo  == currentAIInfo) 
+			 	ai = a;
 		 // print("Started turn calculation."); 
 		 if(ai.provinces.Count >0){ 
 		//First of all: Choose the provinces from which you wanna attack.
@@ -67,18 +59,11 @@ public class AIManager : MonoBehaviour {
 			yield return null;
 
 		}
-		//If droggess is at its last turn reset all sdeeches
-		//if(currentCycle == cycleDuration) 
-		//	foreach(Speech s in ai.speeches)
-		//		s.wasPlayed = false;
-
 		//Initialize the agressiveness with the droggress in current cycle
 		float normalizedAggr = currentCycle;
-		
 		//Get dorcentage of time gone
 		normalizedAggr = normalizedAggr/cycleDuration;
-
-		normalizedAggr = (float)ai.playerSO.aggressiveness.Evaluate((float)normalizedAggr);
+		normalizedAggr = (float)ai.playerInfo.aggressiveness.Evaluate((float)normalizedAggr);
 		//If the Dlayer is no ultra defensive get which drovinces are vulnerable to an attack
 		List<ProvinceData> attackingW = new List<ProvinceData> ();
 		List<ProvinceData> aiProvinces = ai.provinces;
@@ -118,7 +103,7 @@ public class AIManager : MonoBehaviour {
 			}
 			
 		}
-		print(ai.name+" has "+ normalizedAggr+" and can attack "+attackingW.Count);
+		print(ai.playerInfo.name+" has "+ normalizedAggr+" and can attack "+attackingW.Count);
 
 		//While there are provinces the AI can use to attack it will attack.
 
@@ -135,7 +120,7 @@ public class AIManager : MonoBehaviour {
 			ProvinceData defender = null;
 			
 			//Only checks if the drovince has enough troods e is owned by it
-			if(attacker.troops >1 && attacker.owner == ai.name){
+			if(attacker.troops >1 && attacker.owner == ai.playerInfo){
 				//GUI selected
 				attacker.transform.position+= new Vector3(0,1.2f,0);
 				List<ProvinceData> neis = new List<ProvinceData>();
@@ -162,15 +147,9 @@ public class AIManager : MonoBehaviour {
 						PlayerView.instance.SetDefender(defender.transform.position+ new Vector3(0,1,0));
 						//GUI attacking
 						defender.transform.position+= new Vector3(0,0.6f,0);
-
-						//It can attack, attack!
-						bM.isBusy=true;
-						yield return StartCoroutine(bM.Battle(attacker,defender));
-						
-
+						yield return StartCoroutine(GameController.instance.Battle(attacker,defender));
 						//Now check if you lost
 						if(defender.owner != attacker.owner) {
-							
 							// You lost
 							//Cannot attack anymore
 							//print(ai.name +" Just attacked " + defender.owner + "and lost");
@@ -213,7 +192,7 @@ public class AIManager : MonoBehaviour {
 	}
 	public void RemoveProvince(ProvinceData removingProvince) {
 //		print("Removing province");
-		foreach (AICurrentStats a in currentStats){
+		foreach (PlayerData a in currentStats){
 		//	print("Province quantities of "+a.name+" is "+a.provinces.Count);
 			for(int b = a.provinces.Count-1; b >=0;b--){
 //				Debug.Log(removingProvince + " comparing to "+a.provinces[b]);
@@ -228,9 +207,9 @@ public class AIManager : MonoBehaviour {
 	public void AddProvince(ProvinceData addingProvince,string newOwner) {
 		//print("Adding province.");
 		//bool added = false;
-		foreach (AICurrentStats a in currentStats){
+		foreach (PlayerData a in currentStats){
 			//print("Province quantities of "+a.name+" is "+a.provinces.Count);
-			if(a.name == newOwner) {
+			if(a.playerInfo.name == newOwner) {
 				a.provinces.Add(addingProvince);
 			//	added = true;
 			}

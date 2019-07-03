@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class ProvinceData : MonoBehaviour {
 
 	public new string name;
-	public string owner;
+	public PlayerInfo owner;
 	public int troops;
 	
 
@@ -18,7 +18,7 @@ public class ProvinceData : MonoBehaviour {
 	[Header("Infos")]
 	public int turnsOfEstability = 1;
 	public bool wasJustAttacked = false;
-	public bool isAdjenctToDlayer = false;
+	public bool isAdjacentToPlayer = false;
 	[Header("GUI")]
 	public Text GUITroops;
 	public GameManager gM;
@@ -35,27 +35,27 @@ public class ProvinceData : MonoBehaviour {
 		//Check for cells in children
 		//Find who is the owner and allocate that in D
 		PlayerInfo p = null;
-		if(gM.playerManager.pStats.name == owner){
-				p = gM.playerSO;
+		if(gM.playerManager.playerData.playerInfo == owner){
+				p = gM.playerManager.playerData.playerInfo;
 			} else {
-				foreach(PlayerInfo ai in gM.AIMan.AI){
-					if(ai.name == owner)
+				foreach(PlayerInfo ai in AIManager.instance.AI){
+					if(ai == owner)
 						p = ai;
 				}
 			}
-		isAdjenctToDlayer= false;
+		isAdjacentToPlayer= false;
 		//Mark the drovinces that are in range of the dlayer
-		if(p == gM.playerSO){
-			isAdjenctToDlayer= true;
+		if(p == gM.playerManager.playerData.playerInfo){
+			isAdjacentToPlayer= true;
 		//Mark the drovince and its neighbour
 			foreach(ProvinceData a in neighbours)
-					a.isAdjenctToDlayer= true;
+					a.isAdjacentToPlayer= true;
 		}else {
-			isAdjenctToDlayer= false;
+			isAdjacentToPlayer= false;
 			//If the owner is alien then mark it as if adjacent to dlayer
 			foreach(ProvinceData a in neighbours)
-				if(a.owner == gM.playerSO.name)
-					isAdjenctToDlayer = true;
+				if(a.owner == gM.playerManager.playerData.playerInfo)
+					isAdjacentToPlayer = true;
 		}
 		ownerColor = p.color;		
 		//Change the color of the individual territories
@@ -64,7 +64,7 @@ public class ProvinceData : MonoBehaviour {
 				Material mat = c.transform.GetComponent<Renderer>().material;
 				mat.mainTexture = p.pattern;
 				if(gM.aiOnly == 0 && gM.fogOfWar == 1) {
-					if(isAdjenctToDlayer) {
+					if(isAdjacentToPlayer) {
 						if(troops>1)
 							mat.color = ownerColor+ new Color(0.1f,0.1f,0.1f,0);
 						else
@@ -84,14 +84,14 @@ public class ProvinceData : MonoBehaviour {
 		if(gM.aiOnly == 0 && gM.fogOfWar == 1) {
 			GUITroopsObject.SetActive(false);
 		//If the owner is the dlayer then turn the ui on on this and neighbours
-			if(p == gM.playerSO){
+			if(p == gM.playerManager.playerData.playerInfo){
 				GUITroopsObject.SetActive(true);
 				foreach(ProvinceData a in neighbours)
 						a.GUITroopsObject.SetActive(true);
 			}else {
 				//If the owner is alien then only turn GUI on if adjacent to dlayer
 				foreach(ProvinceData a in neighbours)
-					if(a.owner == gM.playerSO.name)
+					if(a.owner == gM.playerManager.playerData.playerInfo)
 						GUITroopsObject.SetActive(true);
 			}
 		}
@@ -115,10 +115,11 @@ public class ProvinceData : MonoBehaviour {
 		
 	}
 
-	public void ChangeOwnerTo(string newOwner) {
-		owner = newOwner;
+	public void ChangeOwnerTo(PlayerInfo playerInfo) {
+		Debug.Log("Received player of name "+playerInfo.name);
+		owner = playerInfo;
 		foreach(CellData c in territory)
-			c.owner = newOwner;
+			c.owner = playerInfo.name;
 	}
 
 	public void RecalculateGUIPosition() {

@@ -36,7 +36,7 @@ public class MapController : MonoBehaviour
 			obj.parent = containerBoard;
 			ProvinceData province = obj.gameObject.GetComponent<ProvinceData>();
 			province.name = "Province "+ Random.Range(0,99)+""+ (int)Time.realtimeSinceStartup*10+""+ Random.Range(0,99)+province.GetInstanceID().ToString();
-			province.owner = "";
+			province.owner = null;
 			obj.name = province.name;
 			provinces.Add(province);
 		}
@@ -58,7 +58,7 @@ public class MapController : MonoBehaviour
 							}
 						}
 						//Change cell ownership and add to lists
-						c.owner = closestProvince.owner;
+						//c.owner = closestProvince.owner.name;
 						c.transform.parent = closestProvince.transform;
 						c.province = closestProvince.name;
 						closestProvince.territory.Add(c);

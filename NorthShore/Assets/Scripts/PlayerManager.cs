@@ -8,32 +8,17 @@ public class PlayerManager : MonoBehaviour {
 	public bool isBusy = false;
 	public Camera playerCam;
 	public ProvinceData attacker, defender;
-
-	public BattleManager bM;
 	public ProvinceData province;
 
 	[SerializeField]
-	public AICurrentStats pStats;
+	public PlayerData playerData;
 
 	ProvinceData lastHoveredProvince = null;
 
 	
 	 void Update() {
 		if(wasInitialized){
-			if(Input.GetKeyDown(KeyCode.M)) {
-				if(Time.timeScale != 20){
-					FindObjectOfType<BattleManager>().isFastMode = true;
-					Time.timeScale = 20;
-					print(Time.timeScale);
-				} else {
-					FindObjectOfType<BattleManager>().isFastMode = false;
-					Time.timeScale = 1;
-					print(Time.timeScale);
-				}
-				
-			}
-		
-		if(!isBusy){
+			if(!isBusy){
 				Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
 				RaycastHit hit;
 				
@@ -70,7 +55,7 @@ public class PlayerManager : MonoBehaviour {
 			if(Input.GetMouseButtonUp(0)){
 				if(province != null) {
 					//The player is selecting an attacker.
-						if(province.owner == "Player") {
+						if(province.owner == playerData.playerInfo) {
 							//If it had another cell attacker, deselect it.
 							if(attacker!= null) {
 								foreach(ProvinceData p in attacker.neighbours)
@@ -123,24 +108,18 @@ public class PlayerManager : MonoBehaviour {
 
 	IEnumerator CallAttack() {
 		if(attacker != null && defender != null)
-			bM.isBusy = true;
-			StartCoroutine(bM.Battle(attacker,defender));
-			while(bM.isBusy){
-				isBusy = true;
-				yield return null;
-			}
-			isBusy = false;
-            if(attacker!= null) {
-				foreach(ProvinceData p in attacker.neighbours)
-									p.transform.position+= new Vector3(0,-0.6f,0);
-				attacker.transform.position+= new Vector3(0,-1.2f,0);
-				attacker = null;
-			}
-			if(defender != null){
-				defender.transform.position+= new Vector3(0,-0.6f,0);
-				defender = null;
-			}
-			yield break;
+				yield return StartCoroutine(GameController.instance.Battle(attacker,defender));
+		if(attacker!= null) {
+			foreach(ProvinceData p in attacker.neighbours)
+				p.transform.position+= new Vector3(0,-0.6f,0);
+			attacker.transform.position+= new Vector3(0,-1.2f,0);
+			attacker = null;
+		}
+		if(defender != null){
+			defender.transform.position+= new Vector3(0,-0.6f,0);
+			defender = null;
+		}
+		yield break;
 	}
 
 }
