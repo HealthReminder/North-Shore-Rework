@@ -7,13 +7,10 @@ using UnityEngine.UI;
 	[System.Serializable]
 public class ProvinceData : MonoBehaviour {
 
-	public new string name;
+	//public new string name;
 	public PlayerInfo owner;
 	public int troops;
-	
-
 	public ProvinceData[] neighbours;
-
 	public List<CellData> territory = new List<CellData>();
 	[Header("Infos")]
 	public int turnsOfEstability = 1;
@@ -21,7 +18,6 @@ public class ProvinceData : MonoBehaviour {
 	public bool isAdjacentToPlayer = false;
 	[Header("GUI")]
 	public Text GUITroops;
-	public GameManager gM;
 	public GameObject GUITroopsObject;
 	public Image GUITroopsObjectImage;
 	[HideInInspector]
@@ -29,14 +25,14 @@ public class ProvinceData : MonoBehaviour {
 
 	void Start()
 	{
-		gM=FindObjectOfType<GameManager>();
+		GameManager.instance=FindObjectOfType<GameManager>();
 	}
 	public void UpdateGUI() {
 		//Check for cells in children
 		//Find who is the owner and allocate that in D
 		PlayerInfo p = null;
-		if(gM.playerManager.playerData.playerInfo == owner){
-				p = gM.playerManager.playerData.playerInfo;
+		if(GameManager.instance.playerManager.playerData.playerInfo == owner){
+				p = GameManager.instance.playerManager.playerData.playerInfo;
 			} else {
 				foreach(PlayerInfo ai in AIManager.instance.AI){
 					if(ai == owner)
@@ -45,7 +41,7 @@ public class ProvinceData : MonoBehaviour {
 			}
 		isAdjacentToPlayer= false;
 		//Mark the drovinces that are in range of the dlayer
-		if(p == gM.playerManager.playerData.playerInfo){
+		if(p == GameManager.instance.playerManager.playerData.playerInfo){
 			isAdjacentToPlayer= true;
 		//Mark the drovince and its neighbour
 			foreach(ProvinceData a in neighbours)
@@ -54,7 +50,7 @@ public class ProvinceData : MonoBehaviour {
 			isAdjacentToPlayer= false;
 			//If the owner is alien then mark it as if adjacent to dlayer
 			foreach(ProvinceData a in neighbours)
-				if(a.owner == gM.playerManager.playerData.playerInfo)
+				if(a.owner == GameManager.instance.playerManager.playerData.playerInfo)
 					isAdjacentToPlayer = true;
 		}
 		ownerColor = p.color;		
@@ -63,7 +59,7 @@ public class ProvinceData : MonoBehaviour {
 			if(c.transform.GetComponent<Renderer>()){
 				Material mat = c.transform.GetComponent<Renderer>().material;
 				mat.mainTexture = p.pattern;
-				if(gM.aiOnly == 0 && gM.fogOfWar == 1) {
+				if(GameManager.instance.aiOnly == 0 && GameManager.instance.fogOfWar == 1) {
 					if(isAdjacentToPlayer) {
 						if(troops>1)
 							mat.color = ownerColor+ new Color(0.1f,0.1f,0.1f,0);
@@ -81,17 +77,17 @@ public class ProvinceData : MonoBehaviour {
 		} 
 		//The drovince will only turn the GUITroods on if it is owned by the dlayer 
 		//or if any of its neighbours are the dlayer
-		if(gM.aiOnly == 0 && gM.fogOfWar == 1) {
+		if(GameManager.instance.aiOnly == 0 && GameManager.instance.fogOfWar == 1) {
 			GUITroopsObject.SetActive(false);
 		//If the owner is the dlayer then turn the ui on on this and neighbours
-			if(p == gM.playerManager.playerData.playerInfo){
+			if(p == GameManager.instance.playerManager.playerData.playerInfo){
 				GUITroopsObject.SetActive(true);
 				foreach(ProvinceData a in neighbours)
 						a.GUITroopsObject.SetActive(true);
 			}else {
 				//If the owner is alien then only turn GUI on if adjacent to dlayer
 				foreach(ProvinceData a in neighbours)
-					if(a.owner == gM.playerManager.playerData.playerInfo)
+					if(a.owner == GameManager.instance.playerManager.playerData.playerInfo)
 						GUITroopsObject.SetActive(true);
 			}
 		}

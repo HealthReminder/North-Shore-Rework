@@ -53,20 +53,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\GameController.cs" />
      <Compile Include="Assets\Scripts\AIManager.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\MapController.cs" />
-     <Compile Include="Assets\Scripts\PlayerManager.cs" />
-     <Compile Include="Assets\Scripts\ProvinceData.cs" />
      <Compile Include="Assets\Scripts\Reworked\AudioManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\Behaviours\ButtonBehaviour.cs" />
      <Compile Include="Assets\Scripts\Reworked\Behaviours\MovingTextureBehaviour.cs" />
      <Compile Include="Assets\Scripts\Reworked\Behaviours\SupportDevelopersBehaviour.cs" />
      <Compile Include="Assets\Scripts\Reworked\CellData.cs" />
+     <Compile Include="Assets\Scripts\Reworked\GameController.cs" />
      <Compile Include="Assets\Scripts\Reworked\GameModeSelectionManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\PlayerInfo.cs" />
+     <Compile Include="Assets\Scripts\Reworked\PlayerManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\PlayerView.cs" />
+     <Compile Include="Assets\Scripts\Reworked\ProvinceData.cs" />
      <Compile Include="Assets\Scripts\Reworked\SoundtrackManager.cs" />
      <Compile Include="Assets\Scripts\Unused\CameraController.cs" />
      <Compile Include="Assets\Scripts\Unused\MenuManager.cs" />

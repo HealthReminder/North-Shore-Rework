@@ -141,7 +141,7 @@ public class GameManager : MonoBehaviour {
 			
 		}
 		//The game will begin. Change cameras, initialize the player and enable the menu again with different buttons
-		playerManager.wasInitialized = true;
+		playerManager.isOn = true;
 		SoundtrackManager.instance.ChangeSet("Crescent");
 		//Fade out overlay
 		PlayerView.instance.FadeOverlay(1);
