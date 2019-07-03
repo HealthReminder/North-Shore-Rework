@@ -3,7 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable] public struct WinCondition{
+	[Range(0.01f,1f)]
+	public float maxPercentage;
+
+}
+
 public class GameManager : MonoBehaviour {
+	[SerializeField] public WinCondition winCondition;
 
 	public string playingNow;
 	public int xSize,zSize;
@@ -16,23 +23,18 @@ public class GameManager : MonoBehaviour {
 	public List<ProvinceData> provinces;
 
 	[Header("Player Logic")]
-	public bool tNextTurn = false;
+	public bool nextTurnPlayerInput = false;
 
 	public PlayerInfo playerSO = null;
-	public PlayerInput player;
+	public PlayerManager playerManager;
+
 	[Header("AI")]
 	public AIManager AIMan;
-	[Header("GUI")]
-	public GameObject objNextTurn; 
-
-	public Image overlay;
 
 	[Header("Player prefs")]
 	public int aiOnly;
 	public int scrambled;
 	public int fogOfWar;
-	[Header("End Game")]
-	public EndGameManager endMan;
 	[Header("Audio")]
 	AudioManager aMan;
 	[Header("Camera")]
@@ -43,8 +45,8 @@ public class GameManager : MonoBehaviour {
 	public void Start () {
 		aMan = FindObjectOfType<AudioManager>();
 		//Get player scriptable object for future reference
-		playerSO = player.pStats.playerSO;
-		overlay.color += new Color(0,0,0,1);
+		playerSO = playerManager.pStats.playerSO;
+		PlayerView.instance.overlay.color += new Color(0,0,0,1);
 		aiOnly	= PlayerPrefs.GetInt("AIOnly");
 		scrambled = PlayerPrefs.GetInt("Scrambled");
 		fogOfWar = PlayerPrefs.GetInt("FogOfWar");
@@ -61,94 +63,35 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void NextTurn(){
-		if(!tNextTurn)
-			tNextTurn = true;
+		if(!nextTurnPlayerInput)
+			nextTurnPlayerInput = true;
 	}
 	IEnumerator GameLoop()                                                                                                       ///////////GAME LOOP
 	{
 		yield return Setup();
 
 		while(true){
-			//Change soundtrack to struggle if its been 5 turns or more
-			if (turn == 4)
-				SoundtrackManager.instance.ChangeSet("Struggle");
-			//Change the background according to who has more territory and proportion
-			if(turn >2)
-			//StartCoroutine(UpdateBackground());
-
-			tNextTurn = false;
-
-			player.isBusy=true;
-
-			objNextTurn.SetActive(true);
-			//PLAYER INPUT
+			//PLAYER TURN
+			nextTurnPlayerInput = false;
+			playerManager.isBusy=true;
 			if(aiOnly == 0){
-			player.isBusy=false;
-			playingNow = player.pStats.name;
-			while(!tNextTurn)
-				yield return null;
-			player.isBusy=true;
-			SoundtrackCheck();
-			}
-			objNextTurn.SetActive(false);
-			
-			//CHECK IF PLAYER WON
-			List<AICurrentStats> checkingNow = new List<AICurrentStats>();
-			checkingNow.Add(player.pStats);
-			endMan.isBusy = true;
-			endMan.CheckGameState(checkingNow);
-			while(endMan.isBusy)
-				yield return null;
-			
-			//AI 
-			foreach(PlayerInfo ai in AIMan.AI ) {
-			playingNow = ai.name; 
-			//Call the artifial intelligence turn. 
-			AIMan.isBusy = true; 
-			print("Started turn for "+ ai.name ); 
-			yield return StartCoroutine(AIMan.Calculate(ai.name )); 
-			print("Finished turn for "+ ai.name ); 
-			//Wait for it to finish 
-			//yield return new WaitForSeconds(0.05f); 
-			}
-
-			//CHECK IF THE PLAYER HAS ANY TERRITORES LEFT
-			if(aiOnly == 0){
-				List<ProvinceData> pp = player.pStats.provinces;
-				if(pp.Count <=0){
-					
-					//End game if the player has no provinces
-					endMan.isBusy = true;
-					StartCoroutine(PlayerView.instance.PlayerLose());
-					while(endMan.isBusy)
-						yield return null;
-				} else if(pp.Count <= 5){
-					//If player has only a few provinces for debugging porpouses 
-					int count = 0;
-					//Check if all its remaining provinces are owned by others players
-					foreach(ProvinceData k in pp)
-						if(k.owner != "Player")
-							count++;
-					if(count == pp.Count){
-						//If so, end the game
-					endMan.isBusy = true;
-					StartCoroutine(PlayerView.instance.PlayerLose());
-					while(endMan.isBusy)
-						yield return null;
-					}
-				}
+				PlayerView.instance.OnPlayerTurn("OnStart");
+				playerManager.isBusy=false;
+				playingNow = playerManager.pStats.name;
+				while(!nextTurnPlayerInput)
+					yield return null;
+				playerManager.isBusy=true;
 				SoundtrackCheck();
+				PlayerView.instance.OnPlayerTurn("OnEnd");
+			}
+			yield return CheckGameState(AIMan.currentStats);
+			//AI TURN
+			foreach(PlayerInfo ai in AIMan.AI ) {
+				playingNow = ai.name; 
+				yield return StartCoroutine(AIMan.Calculate(ai.name )); 
 			}
 
-			//CHECK IF AI WON
-			checkingNow = new List<AICurrentStats>();
-			foreach(AICurrentStats s in AIMan.currentStats)
-				checkingNow.Add(s);
-			endMan.isBusy = true;
-			endMan.CheckGameState(checkingNow);
-			while(endMan.isBusy)
-				yield return null;
-
+			yield return CheckGameState(AIMan.currentStats);
 
 			//NEW TURN
 			DistributeTroops();
@@ -197,28 +140,68 @@ public class GameManager : MonoBehaviour {
 			provinces[i].UpdateGUI();
 			
 		}
-		//Inform the endgame the quantity of provinces in total so that it can calculate who has a certain percentage of the provinces
-		endMan.provinceQuantity = provinces.Count;
-		Debug.Log("Here2");
 		//The game will begin. Change cameras, initialize the player and enable the menu again with different buttons
-		player.wasInitialized = true;
+		playerManager.wasInitialized = true;
 		SoundtrackManager.instance.ChangeSet("Crescent");
 		//Fade out overlay
-		while(overlay.color.a > 0){
-			overlay.color+= new Color(0,0,0,-1f*Time.deltaTime);
-			yield return null;
-		}
+		PlayerView.instance.FadeOverlay(1);
 		Debug.Log("Here3");
 		//Dlay initial soundtrack
+		yield break;
+	}
+	public IEnumerator CheckGameState (AICurrentStats[] players) {
+		if(turn <= 5)
+			yield break;
+		bool somethingHappened = false;
+		foreach(AICurrentStats a in players) {
+			if(!somethingHappened){
+				print("Checking if "+a.name+" won with" +(float)a.provinces.Count/(float)provinces.Count);
+				if((float)a.provinces.Count/(float)provinces.Count >= winCondition.maxPercentage){
+					if(a.name == playerSO.name){
+						somethingHappened = true;
+						//Player won
+						StartCoroutine(PlayerView.instance.PlayerWin());
+					} else {
+						somethingHappened = true;
+						//Player lost
+						StartCoroutine(PlayerView.instance.PlayerLose());
+						SoundtrackManager.instance.ChangeSet("Intro");
+					}
+				}
+			}
+		}
+		if(aiOnly == 0){
+			//End game if the player has no provinces
+			if(playerManager.pStats.provinces.Count <=0){
+				yield return PlayerView.instance.PlayerLose();
+			} else if (playerManager.pStats.provinces.Count <= 5){
+				//If player has only a few provinces for debugging porpouses 
+				int count = 0;
+				//Check if all its remaining provinces are owned by others players
+				foreach(ProvinceData k in playerManager.pStats.provinces)
+					if(k.owner != "Player")
+						count++;
+				if(count == playerManager.pStats.provinces.Count){
+					//If so, end the game
+					yield return PlayerView.instance.PlayerLose();
+				}
+			}
+			SoundtrackCheck();
+		}
+		while(somethingHappened)
+			yield return null;
+		//If no one wons just keep going
 		yield break;
 	}
 	void SoundtrackCheck() {
 		//Check if the player has more than 50% of the mad
 		//Check if the game is late and the player has less than 40% of the mad
-		if(turn > 10){
-			if(player.pStats.provinces.Count > 2*provinces.Count/3){
+		if(turn == 4){
+			SoundtrackManager.instance.ChangeSet("Struggle");
+		} else if(turn > 10){
+			if(playerManager.pStats.provinces.Count > 2*provinces.Count/3){
 				SoundtrackManager.instance.ChangeSet("Winning");
-			} else if(player.pStats.provinces.Count <= provinces.Count/4){
+			} else if(playerManager.pStats.provinces.Count <= provinces.Count/4){
 				SoundtrackManager.instance.ChangeSet("Intense");
 			}  
 		}
@@ -231,11 +214,11 @@ public class GameManager : MonoBehaviour {
 		//Do it for every player
 		int gaining = 0;
 		if(aiOnly == 0){
-			if(player != null){
+			if(playerManager != null){
 				//Set current troods gain to 0
 				gaining = 0;
 				//Get new troods according to territory count
-				int derTerritory = player.pStats.provinces.Count;
+				int derTerritory = playerManager.pStats.provinces.Count;
 				//Clamd it to the maximum troods a nation can get in its whole lands
 				if(scrambled == 0){
 				derTerritory = Mathf.Clamp(derTerritory,1,(6+(derTerritory/10)));
@@ -252,7 +235,7 @@ public class GameManager : MonoBehaviour {
 
 				//Distribute the troods to the heighest riority targets
 				List<ProvinceData> targets = new List<ProvinceData>();
-				foreach(ProvinceData d in player.pStats.provinces) {
+				foreach(ProvinceData d in playerManager.pStats.provinces) {
 					int nC = 0;
 					foreach(ProvinceData a in d.neighbours)
 						if(a.owner != d.owner)
@@ -318,29 +301,10 @@ public class GameManager : MonoBehaviour {
 					} else {
 						Debug.Log("Index error. Skidding it.");
 					}
-				//	print(" "+ randomSelect + " " +targets.Count);
 				}
-//				print(" "+ gaining + " " +aIStats.provinces.Count);
-				
-
 			}
 		}
-		/*
-		foreach(Province p in provinces){
-				if (p.troops < 6) {
-					p.troops += 1;
-					if (p.owner == "Pavlin")
-						p.troops++;
-				}
-				p.turnsOfEstability++;
-				p.wasJustAttacked = false;
-				p.UpdateGUI();
-			}
-			*/
-	}                                                                                                    				   //////////////////GAME LOOP
-
- 
-//PLAYER DISTRIBUTION
+	}                     
 	IEnumerator DistributePlayers() {
 		AIMan.Setup();
 		int index = 0;
@@ -358,7 +322,7 @@ public class GameManager : MonoBehaviour {
 			players.Add(d);
 
 		if(aiOnly == 0){
-			players.Add(player.pStats.playerSO);
+			players.Add(playerManager.pStats.playerSO);
 			toEach = tempP.Count/(AIMan.AI.Length+1);
 			}
 		else{
@@ -393,8 +357,8 @@ public class GameManager : MonoBehaviour {
 					}
 					//Add all the drovinces its getting change its owner and find it in tempP list
 					foreach(ProvinceData g in getting){
-						g.ChangeOwnerTo(player.pStats.name);
-						player.pStats.provinces.Add(g);
+						g.ChangeOwnerTo(playerManager.pStats.name);
+						playerManager.pStats.provinces.Add(g);
 						for(int k =tempP.Count-1; k >= 0 ; k--) 
 							if(tempP[k] == g)
 								tempP.RemoveAt(k);

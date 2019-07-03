@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerInput : MonoBehaviour {
+public class PlayerManager : MonoBehaviour {
 	public bool wasInitialized = false;
 	public bool isBusy = false;
 	public Camera playerCam;

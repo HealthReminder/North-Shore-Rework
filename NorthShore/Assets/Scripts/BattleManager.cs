@@ -99,12 +99,12 @@ public class BattleManager : MonoBehaviour {
 			//If the attacker wins, the defender loses its spot. 
 			//The attacking troops moves to the defending spot with one less troop, leaving one behind.
 			//Take the province away from the owner
-			if(gM.player.pStats.name == defender.owner){
+			if(gM.playerManager.pStats.name == defender.owner){
 				//Debug.Log("The player is the loser");
-				for(int f = gM.player.pStats.provinces.Count-1; f>=0; f--) {
-					if(gM.player.pStats.provinces[f] == defender){
+				for(int f = gM.playerManager.pStats.provinces.Count-1; f>=0; f--) {
+					if(gM.playerManager.pStats.provinces[f] == defender){
 						//Debug.Log("Removed province from the player.");
-						gM.player.pStats.provinces.RemoveAt(f);
+						gM.playerManager.pStats.provinces.RemoveAt(f);
 					}else
 						Debug.Log("Couldn't find the losing province owned by the player");
 					}
@@ -114,9 +114,9 @@ public class BattleManager : MonoBehaviour {
 			}
 			yield return null;
 			//Give the province to another owner
-			if(gM.player.pStats.name == attacker.owner){
+			if(gM.playerManager.pStats.name == attacker.owner){
 			//	Debug.Log("The player is the winner");
-				gM.player.pStats.provinces.Add(defender);
+				gM.playerManager.pStats.provinces.Add(defender);
 			} else {
 				gM.AIMan.AddProvince(defender,attacker.owner);
 			}

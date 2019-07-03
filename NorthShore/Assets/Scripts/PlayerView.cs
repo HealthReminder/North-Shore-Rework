@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class PlayerView : MonoBehaviour
 {
+	[Header("Canvas")]
+	public GameObject nextTurnButtonObject;
+	public Image overlay;
 	[Header("Pointer View")]
 	public LineRenderer pointer_Line;
 	public Transform pointer_Defender,pointer_Attacker;
@@ -18,6 +21,19 @@ public class PlayerView : MonoBehaviour
     private void Awake() {
         instance = this;
     }
+	#region Events 
+	public void OnPlayerTurn(string state) {
+		if(state == "OnStart"){
+			nextTurnButtonObject.SetActive(true);
+		} else if(state == "OnEnd"){
+			nextTurnButtonObject.SetActive(false);
+		}
+	}
+	public void FadeOverlay(int state) {
+		StopCoroutine(FadeOverlayRoutine(-1));
+		StartCoroutine(FadeOverlayRoutine(state));
+	}
+	#endregion
 	#region Pointer View
 	public void SetDefender(Vector3 newDos) {
 		pointer_Line.SetPosition(0,pointer_Attacker.transform.position);
@@ -79,4 +95,21 @@ public class PlayerView : MonoBehaviour
 		yield break;
 	}
 	#endregion
+
+	IEnumerator FadeOverlayRoutine(int state) {
+		Debug.Log("Fading to "+state);
+		if(state == 0) {
+			while(overlay.color.a < 1){
+				overlay.color+= new Color(0,0,0,2f*Time.deltaTime);
+				yield return null;
+			}
+		} else if(state == 1) {
+			while(overlay.color.a > 0){
+			overlay.color+= new Color(0,0,0,-1f*Time.deltaTime);
+			yield return null;
+			}
+		}
+		Debug.Log("Finished to "+state);
+		yield break;
+	}
 }

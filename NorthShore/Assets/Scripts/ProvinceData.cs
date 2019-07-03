@@ -35,7 +35,7 @@ public class ProvinceData : MonoBehaviour {
 		//Check for cells in children
 		//Find who is the owner and allocate that in D
 		PlayerInfo p = null;
-		if(gM.player.pStats.name == owner){
+		if(gM.playerManager.pStats.name == owner){
 				p = gM.playerSO;
 			} else {
 				foreach(PlayerInfo ai in gM.AIMan.AI){

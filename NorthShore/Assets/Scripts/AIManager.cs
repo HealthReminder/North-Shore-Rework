@@ -12,7 +12,6 @@ using UnityEngine;
 
 public class AIManager : MonoBehaviour {
 
-	public bool isBusy = false;
 	public PlayerInfo[] AI;
 	BattleManager bM;
 	[SerializeField]
@@ -210,7 +209,6 @@ public class AIManager : MonoBehaviour {
 		yield return null; 	
 		}
 		Debug.Log("Is done attacking");
-		isBusy = false;
 		yield break;	
 	}
 	public void RemoveProvince(ProvinceData removingProvince) {
