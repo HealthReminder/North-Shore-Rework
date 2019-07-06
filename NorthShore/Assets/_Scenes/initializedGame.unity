@@ -5042,6 +5042,36 @@ Transform:
   m_Father: {fileID: 1968415199}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!1 &488241112
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 488241113}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &488241113
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 488241112}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1382698989}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &656936782
 GameObject:
   m_ObjectHideFlags: 0
@@ -5869,17 +5899,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   winCondition:
-    maxPercentage: 0.9
+    maxPercentage: 0.83
   playingNow: 
   mapSizeX: 100
   mapSizeY: 100
   playerManager: {fileID: 1103680972}
+  allPlayers: []
   turn: 1
   provinces: []
   nextTurnPlayerInput: 0
   AIMan: {fileID: 1673500014}
   aiOnly: 0
-  scrambled: 0
+  isScrambleMode: 0
   fogOfWar: 0
 --- !u!4 &1382698989
 Transform:
@@ -5895,6 +5926,7 @@ Transform:
   - {fileID: 1114740250}
   - {fileID: 1673500013}
   - {fileID: 1438832365}
+  - {fileID: 488241113}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -16113,6 +16145,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3908446037638630893, guid: 88cc258943562cb49bea328822295427,
+        type: 3}
+      propertyPath: playerCam
+      value: 
+      objectReference: {fileID: 895957261}
     - target: {fileID: 3908446037638630892, guid: 88cc258943562cb49bea328822295427,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -16168,15 +16205,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3908446037638630893, guid: 88cc258943562cb49bea328822295427,
-        type: 3}
-      propertyPath: playerCam
-      value: 
-      objectReference: {fileID: 895957261}
     - target: {fileID: 3908446037653832136, guid: 88cc258943562cb49bea328822295427,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1382698988}
+    - target: {fileID: 3908446038732777143, guid: 88cc258943562cb49bea328822295427,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -10.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 745726669030082930, guid: 88cc258943562cb49bea328822295427,
+        type: 3}
+      propertyPath: m_Positions.Array.data[0].x
+      value: 999
+      objectReference: {fileID: 0}
+    - target: {fileID: 745726669030082930, guid: 88cc258943562cb49bea328822295427,
+        type: 3}
+      propertyPath: m_Positions.Array.data[1].x
+      value: 999
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 88cc258943562cb49bea328822295427, type: 3}

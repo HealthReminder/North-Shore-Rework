@@ -93,14 +93,16 @@ public class SoundtrackManager : MonoBehaviour {
 		for(int a = 0; a < sourceQuantity; a++){
 			aS = audioSources[a] = gameObject.AddComponent<AudioSource>();
 			aS.playOnAwake = false;
-			//aS.loop = true;
+			aS.loop = true;
 		}
 	}
 
 	//This function is responsable for changing the music set is player
 	//To deliver the right mood
 	public void ChangeSet(string name){
-
+		if(currentSet != null)
+			if(currentSet.name == name)
+				return;
 		//If the set exists
 		bool exists = false;
 		foreach(Set s in sets)

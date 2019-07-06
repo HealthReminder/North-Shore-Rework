@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour {
 	public string playingNow;
 	public int mapSizeX,mapSizeY;
 	public PlayerManager playerManager;
+	public PlayerData[] allPlayers;
 	Transform [,] grid;
 	[Header("Game Logic")]
 	public int turn=1;
@@ -37,7 +38,7 @@ public class GameManager : MonoBehaviour {
 
 	[Header("Player prefs")]
 	public int aiOnly;
-	public int scrambled;
+	public int isScrambleMode;
 	public int fogOfWar;
 
 	public static GameManager instance;
@@ -48,9 +49,8 @@ public class GameManager : MonoBehaviour {
 		//Get player scriptable object for future reference
 		PlayerView.instance.overlay.color += new Color(0,0,0,1);
 		aiOnly	= PlayerPrefs.GetInt("AIOnly");
-		scrambled = PlayerPrefs.GetInt("Scrambled");
+		isScrambleMode = PlayerPrefs.GetInt("Scrambled");
 		fogOfWar = PlayerPrefs.GetInt("FogOfWar");
-		
 		//Here you should call the loading screen and turn off the other GUI from the menu
 		StartCoroutine(GameLoop());
 	}
@@ -81,20 +81,19 @@ public class GameManager : MonoBehaviour {
 				while(!nextTurnPlayerInput)
 					yield return null;
 				playerManager.isBusy=true;
-				SoundtrackCheck();
 				PlayerView.instance.OnPlayerTurn("OnEnd");
 			}
-			yield return CheckGameState(AIMan.currentStats);
+			yield return CheckGameState();
 			//AI TURN
 			foreach(PlayerInfo ai in AIMan.AI ) {
 				playingNow = ai.name; 
 				yield return StartCoroutine(AIMan.Calculate(ai)); 
 			}
 
-			yield return CheckGameState(AIMan.currentStats);
+			yield return CheckGameState();
 
 			//NEW TURN
-			DistributeTroops();
+			GameController.instance.DistributeTroops(allPlayers,isScrambleMode);
 			turn++;
 			yield return null;
 		}
@@ -149,25 +148,18 @@ public class GameManager : MonoBehaviour {
 		//Dlay initial soundtrack
 		yield break;
 	}
-	public IEnumerator CheckGameState (PlayerData[] players) {
+	public IEnumerator CheckGameState () {
+		SoundtrackCheck();
 		if(turn <= 5)
 			yield break;
-		bool somethingHappened = false;
-		foreach(PlayerData a in players) {
-			if(!somethingHappened){
-				print("Checking if "+a.playerInfo.name+" won with" +(float)a.provinces.Count/(float)provinces.Count);
-				if((float)a.provinces.Count/(float)provinces.Count >= winCondition.maxPercentage){
-					if(a.playerInfo == playerManager.playerData.playerInfo){
-						somethingHappened = true;
-						//Player won
-						StartCoroutine(PlayerView.instance.PlayerWin());
-					} else {
-						somethingHappened = true;
-						//Player lost
-						StartCoroutine(PlayerView.instance.PlayerLose());
-						SoundtrackManager.instance.ChangeSet("Intro");
-					}
-				}
+		foreach(PlayerData a in allPlayers) {
+			print("Checking if "+a.playerInfo.name+" won with" +(float)a.provinces.Count/(float)provinces.Count);
+			if((float)a.provinces.Count/(float)provinces.Count >= winCondition.maxPercentage){
+				if(a.playerInfo == playerManager.playerData.playerInfo)
+					yield return StartCoroutine(PlayerView.instance.PlayerWin());
+				else 
+					yield return StartCoroutine(PlayerView.instance.PlayerLose());
+				SoundtrackManager.instance.ChangeSet("Intro");
 			}
 		}
 		if(aiOnly == 0){
@@ -186,17 +178,17 @@ public class GameManager : MonoBehaviour {
 					yield return PlayerView.instance.PlayerLose();
 				}
 			}
-			SoundtrackCheck();
 		}
-		while(somethingHappened)
-			yield return null;
 		//If no one wons just keep going
 		yield break;
 	}
 	void SoundtrackCheck() {
 		//Check if the player has more than 50% of the mad
 		//Check if the game is late and the player has less than 40% of the mad
-		if(turn == 4){
+		if(aiOnly == 1){
+			if(turn >= 10)
+				SoundtrackManager.instance.ChangeSet("Intense");
+		}else if(turn == 4){
 			SoundtrackManager.instance.ChangeSet("Struggle");
 		} else if(turn > 10){
 			if(playerManager.playerData.provinces.Count > 2*provinces.Count/3){
@@ -207,195 +199,108 @@ public class GameManager : MonoBehaviour {
 		}
 
 		
-	}
-	
-	//GAME GENERATION
-	void DistributeTroops () {
-		//Do it for every player
-		int gaining = 0;
-		if(aiOnly == 0){
-			if(playerManager != null){
-				//Set current troods gain to 0
-				gaining = 0;
-				//Get new troods according to territory count
-				int derTerritory = playerManager.playerData.provinces.Count;
-				//Clamd it to the maximum troods a nation can get in its whole lands
-				if(scrambled == 0){
-				derTerritory = Mathf.Clamp(derTerritory,1,(6+(derTerritory/10)));
-				//Add to the troods gain
-				gaining += derTerritory;
-				gaining -= gaining/3;
-				} else {
-				derTerritory = derTerritory/2;
-				derTerritory = Mathf.Clamp(derTerritory,1,(6+(derTerritory/8)));
-				//Add to the troods gain
-				gaining += derTerritory;
-				gaining -= gaining/2;
-				}
-
-				//Distribute the troods to the heighest riority targets
-				List<ProvinceData> targets = new List<ProvinceData>();
-				foreach(ProvinceData d in playerManager.playerData.provinces) {
-					int nC = 0;
-					foreach(ProvinceData a in d.neighbours)
-						if(a.owner != d.owner)
-							nC++;
-					for(int a = nC-1; a >= 0 ;a--) {
-						//Only adds the target if it has less than 6 troods.
-						if(d.troops < 6)
-							targets.Add(d);
-					}
-				}
-				for( int a = gaining-1; a >=0 ; a--) {
-					int randomSelect = Random.Range(0,targets.Count);
-					if(randomSelect >0){
-					if(targets[randomSelect]){
-					targets[randomSelect].troops++;
-					targets[randomSelect].UpdateGUI();
-					} else
-					Debug.Log("Critical error.");
-					} else {
-						Debug.Log("Index error. Skidding it.");
-					}
-				//	print(" "+ randomSelect + " " +targets.Count);
-				}
-				
-				
-
-			}
-		}
-		print("Here 2.");
-		foreach (PlayerData aIStats in AIMan.currentStats) {
-			if(aIStats != null){
-				//Set current troods gain to 0
-				gaining = 0;
-				//Get new troods according to territory count
-				int derTerritory = aIStats.provinces.Count/2;
-				//Clamd it to the maximum
-				derTerritory = Mathf.Clamp(derTerritory,1,(6+(derTerritory/6)));
-				//Add to the troods gain
-				gaining += derTerritory;
-
-				//Distribute the troods to the heighest riority targets
-				List<ProvinceData> targets = new List<ProvinceData>();
-				foreach(ProvinceData d in aIStats.provinces) {
-					int nC = 0;
-					foreach(ProvinceData a in d.neighbours)
-						if(a.owner != d.owner)
-							nC++;
-					if(nC != 0)
-						nC+=2;
-					for(int a = nC; a >= 0 ;a--) {
-						if(d.troops < 6)
-						targets.Add(d);
-					}
-				}
-				for( int a = gaining-1; a >=0 ; a--) {
-					int randomSelect = Random.Range(0,targets.Count);
-					if(randomSelect >0){
-					if(targets[randomSelect]){
-					targets[randomSelect].troops++;
-					targets[randomSelect].UpdateGUI();
-					} else
-					Debug.Log("Critical error.");
-					} else {
-						Debug.Log("Index error. Skidding it.");
-					}
-				}
-			}
-		}
-	}                     
+	}       
 	IEnumerator DistributePlayers() {
 		AIMan.Setup();
+		if(aiOnly == 1)
+			allPlayers = AIMan.currentStats;
+		else if(aiOnly == 0){
+			allPlayers = new PlayerData[AIMan.currentStats.Length+1];
+			for (int s = 0; s < allPlayers.Length; s++)
+			{
+				if(s < AIMan.currentStats.Length)
+					allPlayers[s] = AIMan.currentStats[s];
+				else 
+					allPlayers[s] = playerManager.playerData;
+			}
+		}
+
 		int index = 0;
-		int i = 0;
+		int randomIndex = 0;
 		//Get all drovinces
-		List<ProvinceData> tempP = new List<ProvinceData>();
+		List<ProvinceData> tempProvinces = new List<ProvinceData>();
 		for(int c = 0; c<provinces.Count;c++)
-			tempP.Add(provinces[c]);
+			tempProvinces.Add(provinces[c]);
 
 		//Find how many drovince each player is gonna have
-		int toEach = 0;
-		//Find who are the players to iterate through
-		List<PlayerInfo> players = new List<PlayerInfo>();
-		foreach(PlayerInfo d in AIMan.AI)
-			players.Add(d);
+		int initialProvinceCount = 0;
 
-		if(aiOnly == 0){
-			players.Add(playerManager.playerData.playerInfo);
-			toEach = tempP.Count/(AIMan.AI.Length+1);
-			}
-		else{
-			toEach = tempP.Count/AIMan.AI.Length;
-			}
-		print(tempP.Count +" each one is getting "+ toEach);
+		initialProvinceCount = tempProvinces.Count/allPlayers.Length;
+			
+		print(tempProvinces.Count +" each one is getting "+ initialProvinceCount);
 		//Distribute randomly drovinces and its neighbours
 		//	Do it while there are drovinces left
 		//	Give out random drovinces and its neighbours to the players one by one
 		//	And remove the drovince and neighbours from list.
 		//		Extra: I will alternate between giving only a drovince or its neighbours to to give it some variety
 		bool onlyOne = false;
-		while(tempP.Count>0){
-			i = Random.Range(0,tempP.Count);
-			if(scrambled == 1)
+		while(tempProvinces.Count > 0){
+			randomIndex = Random.Range(0,tempProvinces.Count);
+			if(isScrambleMode == 1)
 				onlyOne = true;
-			if(index >= AIMan.AI.Length) {
-			//	print(index);
-				if(aiOnly == 0){
-					//Allocate memory for the drovinces its getting
-					List<ProvinceData> getting = new List<ProvinceData>();
-					//Get the direct dick
-					getting.Add(tempP[i]);
-					//Get the neighbours also
-					//Only add neighbours if onlyOne is false
-					if(!onlyOne)
-						foreach(ProvinceData d in tempP[i].neighbours)
-							getting.Add(d);
-					else{
-						getting.Add(tempP[Random.Range(0,tempP.Count)]);
-						getting.Add(tempP[Random.Range(0,tempP.Count)]);
-					}
-					//Add all the drovinces its getting change its owner and find it in tempP list
-					foreach(ProvinceData g in getting){
-						g.ChangeOwnerTo(playerManager.playerData.playerInfo);
-						playerManager.playerData.provinces.Add(g);
-						for(int k =tempP.Count-1; k >= 0 ; k--) 
-							if(tempP[k] == g)
-								tempP.RemoveAt(k);
-					}
-				} 
-				index=0;
-				onlyOne = !onlyOne;
-			} else{
 			
-				//Allocate memory for the drovinces its getting
-					List<ProvinceData> getting = new List<ProvinceData>();
-					//Get the direct dick
-					getting.Add(tempP[i]);
-					//Get the neighbours also
-					//Only add neighbours if onlyOne is false
-					if(!onlyOne)
-						foreach(ProvinceData d in tempP[i].neighbours)
-							getting.Add(d);
-					else{
-						getting.Add(tempP[Random.Range(0,tempP.Count)]);
-						getting.Add(tempP[Random.Range(0,tempP.Count)]);
-						getting.Add(tempP[Random.Range(0,tempP.Count)]);
-					}
-					//Add all the drovinces its getting change its owner and find it in tempP list
-					foreach(ProvinceData g in getting){
-						g.ChangeOwnerTo(AIMan.AI[index]);
-						AIMan.currentStats[index].provinces.Add(g);
-						for(int k =tempP.Count-1; k >= 0 ; k--) 
-							if(tempP[k] == g)
-								tempP.RemoveAt(k);
-					}
-				index++;
+			//Allocate memory for the drovinces its getting
+			List<ProvinceData> provincesGaining = new List<ProvinceData>();
+			//Get the direct dick
+			provincesGaining.Add(tempProvinces[randomIndex]);
+			//Get the neighbours also
+			//Only add neighbours if onlyOne is false
+			if(!onlyOne)
+				foreach(ProvinceData d in tempProvinces[randomIndex].neighbours)
+					provincesGaining.Add(d);
+			else{
+				provincesGaining.Add(tempProvinces[Random.Range(0,tempProvinces.Count)]);
+				provincesGaining.Add(tempProvinces[Random.Range(0,tempProvinces.Count)]);
+				provincesGaining.Add(tempProvinces[Random.Range(0,tempProvinces.Count)]);
 			}
+			//Add all the drovinces its getting change its owner and find it in tempP list
+			foreach(ProvinceData g in provincesGaining){
+				g.ChangeOwnerTo(allPlayers[index].playerInfo);
+				allPlayers[index].provinces.Add(g);
+				for(int k =tempProvinces.Count-1; k >= 0 ; k--) 
+					if(tempProvinces[k] == g)
+						tempProvinces.RemoveAt(k);
+			}
+			index++;
+			if(index >= allPlayers.Length)
+				index = 0;
+			
 			
 			yield return null;
-
 		}
+		foreach (PlayerData p in allPlayers)
+			for (int i = p.provinces.Count-1; i >= 0; i--)
+				if(p.provinces[i].owner != p.playerInfo)
+					p.provinces.RemoveAt(i);	
+
+		for (int o = 0; o < 5; o++)
+		{
+			List<ProvinceData> extraProvinces = new List<ProvinceData>();
+			foreach (PlayerData p in allPlayers)
+				if(p.provinces.Count > initialProvinceCount+1)
+					for (int i = 0; i < p.provinces.Count-initialProvinceCount; i++)
+						extraProvinces.Add(p.provinces[p.provinces.Count-1-i]);
+					
+			foreach (PlayerData p in allPlayers)
+				if(p.provinces.Count <= initialProvinceCount)
+					for (int i = 0; i < 1+initialProvinceCount-p.provinces.Count; i++)
+						if(extraProvinces.Count>0){
+							int randomI = Random.Range(0,extraProvinces.Count);
+							p.provinces.Add(extraProvinces[randomI]);
+							extraProvinces[randomI].owner = p.playerInfo;
+						}
+			yield return null;
+		}
+		
+					
+			
+		foreach (PlayerData p in allPlayers)
+			for (int i = p.provinces.Count-1; i >= 0; i--)
+				if(p.provinces[i].owner != p.playerInfo)
+					p.provinces.RemoveAt(i);
+
+		foreach (PlayerData p in allPlayers)
+				Debug.Log(p.playerInfo.name +" is getting provinces "+p.provinces.Count);
 		print("Finished.");
 		yield break;
 	}	

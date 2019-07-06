@@ -8,6 +8,74 @@ public class GameController : MonoBehaviour
 	private void Awake() {
 		instance = this;
 	}
+	#region Troop Distribution
+	public void DistributeTroops(PlayerData[] allPlayers, int isScrambled){
+		//Do it for every player
+		int gaining = 0;
+		print("Here 2.");
+		foreach (PlayerData currentPlayer in allPlayers) {
+			if(currentPlayer != null){
+				//Set current troods gain to 0
+				gaining = 0;
+				//For balancing purpouses
+				if(currentPlayer == GameManager.instance.playerManager.playerData){
+					if(currentPlayer.provinces.Count <= 5)
+						gaining+=1;
+				} else {
+					if(currentPlayer.provinces.Count >= 15)
+						gaining-=1;
+					if(currentPlayer.provinces.Count >= 30)
+						gaining-=1;
+				}
+
+				//Get new troods according to territory count
+				int byTerrytory;
+				if(isScrambled == 1)
+					byTerrytory = currentPlayer.provinces.Count/2;
+				else 
+					byTerrytory = currentPlayer.provinces.Count/3;
+				byTerrytory = Mathf.Clamp(byTerrytory,1,8);
+				//Add to the troods gain
+				gaining += byTerrytory;
+				
+				//DEBUG ONLY
+				//if(currentPlayer == playerManager.playerData)
+					//gaining*=10;
+
+				//Distribute the troops to the heighest priority targets
+				List<ProvinceData> targets = new List<ProvinceData>();
+				foreach(ProvinceData d in currentPlayer.provinces) {
+					int enemyNeighbourCount = 0;
+					foreach(ProvinceData a in d.neighbours)
+						if(a.owner != d.owner)
+							enemyNeighbourCount++;
+
+					if(enemyNeighbourCount != 0)
+						enemyNeighbourCount+=2;
+						
+					for(int a = enemyNeighbourCount-1; a >= 0 ;a--) {
+						if(d.troops < 6)
+							targets.Add(d);
+					}
+				}
+				for( int a = gaining-1; a >=0 ; a--) {
+					int randomSelect = Random.Range(0,targets.Count);
+					if(randomSelect >0){
+					if(targets[randomSelect]){
+					targets[randomSelect].troops++;
+					targets[randomSelect].UpdateGUI();
+					} else
+					Debug.Log("Critical error.");
+					} else {
+						Debug.Log("Index error. Skidding it.");
+					}
+				}
+				Debug.Log("Player "+currentPlayer.playerInfo.name+" received "+gaining+" units.");
+			}
+		}
+	}
+	#endregion
+	#region  Battling
 	public IEnumerator Battle(ProvinceData attacker, ProvinceData defender) {
 		
 		//Player shots if visible
@@ -79,5 +147,5 @@ public class GameController : MonoBehaviour
 		yield break;
 		
 	}
-	
+	#endregion
 }

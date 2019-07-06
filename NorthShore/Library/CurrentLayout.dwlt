@@ -114,7 +114,7 @@ MonoBehaviour:
   m_MinSize: {x: 817, y: 498}
   m_MaxSize: {x: 22012, y: 14048}
   vertical: 0
-  controlID: 30
+  controlID: 49
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_MinSize: {x: 540, y: 498}
   m_MaxSize: {x: 18010, y: 14048}
   vertical: 1
-  controlID: 87
+  controlID: 50
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -164,7 +164,7 @@ MonoBehaviour:
   m_MinSize: {x: 406, y: 224}
   m_MaxSize: {x: 8006, y: 4024}
   vertical: 0
-  controlID: 88
+  controlID: 51
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -317,8 +317,8 @@ MonoBehaviour:
     y: 0
     width: 389
     height: 374
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 204, y: 224}
+  m_MaxSize: {x: 4004, y: 4024}
   m_ActualView: {fileID: 22}
   m_Panes:
   - {fileID: 22}
@@ -463,9 +463,9 @@ MonoBehaviour:
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 87.49536, y: 2.9414062, z: 41.95508}
+    m_Target: {x: 57.51172, y: -5.4296875, z: 34.960938}
     speed: 2
-    m_Value: {x: 87.49536, y: 2.9414062, z: 41.95508}
+    m_Value: {x: 57.51172, y: -5.4296875, z: 34.960938}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -493,13 +493,13 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: 0.4784706, y: 0.0913652, z: -0.050139662, w: 0.871897}
+    m_Target: {x: 0.30821705, y: 0.675895, z: -0.37620562, w: 0.5537487}
     speed: 2
-    m_Value: {x: 0.4784706, y: 0.0913652, z: -0.050139662, w: 0.871897}
+    m_Value: {x: 0.30821705, y: 0.675895, z: -0.37620562, w: 0.5537487}
   m_Size:
-    m_Target: 139.10173
+    m_Target: 114.37173
     speed: 2
-    m_Value: 139.10173
+    m_Value: 114.37173
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -618,19 +618,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts
+    - Assets/Scripts/Reworked
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/Scripts/Reworked
   m_LastFoldersGridSize: -1
   m_LastProjectPath: B:\Projetos\2019\2\North-Shore-Rework\NorthShore\NorthShore
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 84270000
-    m_LastClickedID: 10116
+    m_SelectedIDs: fa270000
+    m_LastClickedID: 10234
     m_ExpandedIDs: 000000006e26000078260000822600004627000084270000de2a0000e02a0000e22a0000e42a0000e62a0000e82a0000ea2a0000ec2a000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -798,9 +798,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
+      m_SelectedIDs: 12250000
       m_LastClickedID: 0
-      m_ExpandedIDs: d6fbffff
+      m_ExpandedIDs: cc8ae0ff788be0ff443ce2ff522ae3ff2ecbf0ff0accf0ff9c9af3ffe075f4ff647ff7ff6457f8ff7257f8ff9457f8ffb057f8ffb257f8ff602af9ff8208feff9206fffff007ffffd6fbfffff4ffffff4a2d0000c8820000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 

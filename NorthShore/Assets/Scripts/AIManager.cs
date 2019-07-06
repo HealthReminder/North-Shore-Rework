@@ -103,7 +103,7 @@ public class AIManager : MonoBehaviour {
 			}
 			
 		}
-		print(ai.playerInfo.name+" has "+ normalizedAggr+" and can attack "+attackingW.Count);
+		//print(ai.playerInfo.name+" has "+ normalizedAggr+" and can attack "+attackingW.Count);
 
 		//While there are provinces the AI can use to attack it will attack.
 
