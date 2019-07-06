@@ -1,6 +1,6 @@
 WebGL
 PlayerPath?
-B:/Projetos/2019/2/North-Shore-Rework/WebGLBuild
+B:/Projetos/2019/2/North-Shore-Rework/Builds/Build/Build
 SceneListBegin?
 Assets/_Scenes/MainMenu.unity
 Assets/_Scenes/initializedGame.unity
@@ -54,6 +54,7 @@ fc108ce7d98c40ac0907e8ca7f500c76 UnityEngine.UI.dll:UnityEngine.UI.Text
 0fd6822f6177297bd0eb4d83cc7a9030 UnityEngine.UI.dll:UnityEngine.UI.ToggleGroup
 abf1930d8126d0b2e00e9449129a0190 UnityEngine.UI.dll:UnityEngine.EventSystems.TouchInputModule
 64e54c0cbb0177c5ea26f340efb9ff85 UnityEngine.UI.dll:UnityEngine.UI.VerticalLayoutGroup
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.SceneBehaviour
 98ad81e9f689a492509f07e75b810aaa Unity.TextMeshPro.dll:TMPro.TMP_InputField
 cf9f5cf2c3145a37ac07f00e50e460f9 UnityEngine.UI.dll:UnityEngine.UI.AspectRatioFitter
 71bb6a6b6c8f052f948db64c7dd3ca4f UnityEngine.UI.dll:UnityEngine.EventSystems.BaseInput
@@ -119,7 +120,7 @@ d251bf88db6c95a6b1aa0b69298da9ef UnityEngine.SpatialTracking.dll:UnityEngine.Spa
 b3ab2106268377ffe25dd18ac23dca28 Unity.TextMeshPro.dll:TMPro.TMP_Asset
 71bb6a6b6c8f052f948db64c7dd3ca4f Unity.TextMeshPro.dll:TMPro.TMP_SpriteAnimator
 9ced7aad240f50feabe95e78e6f5cdb2 Assembly-CSharp.dll:.AIManager
-2a10cbbc5452f9f76a5eb28e317bfbc8 Assembly-CSharp.dll:.PlayerView
+3735a8eeb99645cd588389da29fec0f0 Assembly-CSharp.dll:.PlayerView
 4fbefdce2b1f1c9bb8d04f261f5a4b12 Assembly-CSharp.dll:.PlayerInfo
 c7e36cf8c802969c39d2b921e1816ff1 Assembly-CSharp.dll:.AudioManager
 4fd8bf02e3089425d3502e26c44ba31a Unity.TextMeshPro.dll:TMPro.TextContainer
@@ -158,10 +159,10 @@ fb6a1ea36b4f6ef5948d283d93760765 UnityEngine.GoogleAudioSpatializer.dll:UnityEng
 5b0391b7e3d9ea9db6c0a8fbd0ca23f6 UnityEngine.GoogleAudioSpatializer.dll:UnityEngine.Experimental.Audio.Google.GvrAudioSourceExtension
 8f093c97343692080f40813ecf128cda Assembly-CSharp.dll:.ProvinceData
 da7590b914d8257109b66eea4494048c Assembly-CSharp.dll:.MapController
-39615d3ca8af3496d0fa7c4a1080d614 Assembly-CSharp.dll:.GameManager
+e0ed01a33e7e2f4c27bad4dc8878320a Assembly-CSharp.dll:.GameManager
 aa492e2de7f49c018baaf28d259fc268 Assembly-CSharp.dll:.GameModeSelectionManager
 a4f0a4f62100f1a4fb5cbe0e00dde83f Unity.TextMeshPro.dll:TMPro.TextMeshProUGUI
-dae4dba3c47bd7bc160ea5a878f99306 Assembly-CSharp.dll:.SupportDevelopersBehaviour
+5d20b6daaa2821030ba14fb618da322c Assembly-CSharp.dll:.SupportDevelopersBehaviour
 5fc094978ce3e3591a7500ed380d854a Unity.Analytics.DataPrivacy.dll:UnityEngine.Analytics.DataPrivacyButton
 d251bf88db6c95a6b1aa0b69298da9ef UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.GameController
