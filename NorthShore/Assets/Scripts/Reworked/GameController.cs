@@ -39,7 +39,7 @@ public class GameController : MonoBehaviour
 				gaining += byTerrytory;
 				
 				//DEBUG ONLY
-				//if(currentPlayer == playerManager.playerData)
+				//if(currentPlayer == GameManager.instance.playerManager.playerData)
 					//gaining*=10;
 
 				//Distribute the troops to the heighest priority targets
@@ -61,11 +61,11 @@ public class GameController : MonoBehaviour
 				for( int a = gaining-1; a >=0 ; a--) {
 					int randomSelect = Random.Range(0,targets.Count);
 					if(randomSelect >0){
-					if(targets[randomSelect]){
-					targets[randomSelect].troops++;
-					targets[randomSelect].UpdateGUI();
-					} else
-					Debug.Log("Critical error.");
+						if(targets[randomSelect]){
+							targets[randomSelect].troops++;
+							targets[randomSelect].UpdateGUI();
+						} else
+						Debug.Log("Critical error.");
 					} else {
 						Debug.Log("Index error. Skidding it.");
 					}

@@ -16,7 +16,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 	[SerializeField] public WinCondition winCondition;
-
+	public bool isMatchEnded = false;
 	public string playingNow;
 	public int mapSizeX,mapSizeY;
 	public PlayerManager playerManager;
@@ -75,13 +75,15 @@ public class GameManager : MonoBehaviour {
 			nextTurnPlayerInput = false;
 			playerManager.isBusy=true;
 			if(aiOnly == 0){
-				PlayerView.instance.OnPlayerTurn("OnStart");
-				playerManager.isBusy=false;
-				playingNow = playerManager.playerData.playerInfo.name;
-				while(!nextTurnPlayerInput)
-					yield return null;
-				playerManager.isBusy=true;
-				PlayerView.instance.OnPlayerTurn("OnEnd");
+				if(playerManager.playerData.provinces.Count > 0){
+					PlayerView.instance.OnPlayerTurn("OnStart");
+					playerManager.isBusy=false;
+					playingNow = playerManager.playerData.playerInfo.name;
+					while(!nextTurnPlayerInput)
+						yield return null;
+					playerManager.isBusy=true;
+					PlayerView.instance.OnPlayerTurn("OnEnd");
+				}
 			}
 			yield return CheckGameState();
 			//AI TURN
@@ -150,22 +152,35 @@ public class GameManager : MonoBehaviour {
 	}
 	public IEnumerator CheckGameState () {
 		SoundtrackCheck();
+		if(isMatchEnded)
+			yield break;
 		if(turn <= 5)
 			yield break;
+
 		foreach(PlayerData a in allPlayers) {
 			print("Checking if "+a.playerInfo.name+" won with" +(float)a.provinces.Count/(float)provinces.Count);
 			if((float)a.provinces.Count/(float)provinces.Count >= winCondition.maxPercentage){
 				if(a.playerInfo == playerManager.playerData.playerInfo)
-					yield return StartCoroutine(PlayerView.instance.PlayerWin());
-				else 
-					yield return StartCoroutine(PlayerView.instance.PlayerLose());
-				SoundtrackManager.instance.ChangeSet("Intro");
+					PlayerView.instance.PlayerWin();
+				else {
+					if(aiOnly == 0){
+						isMatchEnded = true;
+						PlayerView.instance.PlayerLose();
+					}
+					else {
+						isMatchEnded = true;
+						PlayerView.instance.PlayerWin();
+					}
+				}
+					
+				//SoundtrackManager.instance.ChangeSet("Intro");
 			}
 		}
 		if(aiOnly == 0){
 			//End game if the player has no provinces
 			if(playerManager.playerData.provinces.Count <=0){
-				yield return PlayerView.instance.PlayerLose();
+				isMatchEnded = true;
+				PlayerView.instance.PlayerLose();
 			} else if (playerManager.playerData.provinces.Count <= 5){
 				//If player has only a few provinces for debugging porpouses 
 				int count = 0;
@@ -175,7 +190,8 @@ public class GameManager : MonoBehaviour {
 						count++;
 				if(count == playerManager.playerData.provinces.Count){
 					//If so, end the game
-					yield return PlayerView.instance.PlayerLose();
+					isMatchEnded = true;
+					PlayerView.instance.PlayerLose();
 				}
 			}
 		}
@@ -185,17 +201,19 @@ public class GameManager : MonoBehaviour {
 	void SoundtrackCheck() {
 		//Check if the player has more than 50% of the mad
 		//Check if the game is late and the player has less than 40% of the mad
-		if(aiOnly == 1){
-			if(turn >= 10)
-				SoundtrackManager.instance.ChangeSet("Intense");
-		}else if(turn == 4){
-			SoundtrackManager.instance.ChangeSet("Struggle");
-		} else if(turn > 10){
-			if(playerManager.playerData.provinces.Count > 2*provinces.Count/3){
-				SoundtrackManager.instance.ChangeSet("Winning");
-			} else if(playerManager.playerData.provinces.Count <= provinces.Count/4){
-				SoundtrackManager.instance.ChangeSet("Intense");
-			}  
+		if(!isMatchEnded){
+			if(aiOnly == 1){
+				if(turn >= 10)
+					SoundtrackManager.instance.ChangeSet("Intense");
+			}else if(turn == 4){
+				SoundtrackManager.instance.ChangeSet("Struggle");
+			} else if(turn > 10){
+				if(playerManager.playerData.provinces.Count > 2*provinces.Count/3){
+					SoundtrackManager.instance.ChangeSet("Winning");
+				} else if(playerManager.playerData.provinces.Count <= provinces.Count/4){
+					SoundtrackManager.instance.ChangeSet("Intense");
+				}  
+			}
 		}
 
 		

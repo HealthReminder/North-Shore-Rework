@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class PlayerView : MonoBehaviour
 {
@@ -15,8 +16,8 @@ public class PlayerView : MonoBehaviour
 	public Transform battle_Target;
 
     [Header("Ending View")]
-	[SerializeField] Image ending_WinImg;
-	[SerializeField] Image ending_LoseImg;
+	public UnityEvent onLoseEvent;
+	public UnityEvent onWinEvent;
 
     public static PlayerView instance;
     private void Awake() {
@@ -57,44 +58,14 @@ public class PlayerView : MonoBehaviour
 	}
 	#endregion
     #region Ending View
-	public IEnumerator PlayerWin () {
-		ending_WinImg.color += new Color(0,0,0,-1);
-		ending_WinImg.gameObject.SetActive(true);
-		while(ending_WinImg.color.a <1){
-			ending_WinImg.color += new Color(0,0,0,0.05f);
-			yield return null;
-		}
-		yield return new WaitForSeconds(1);
-		while(!Input.anyKey)
-
-			yield return null;
-		while(ending_WinImg.color.a >0){
-			ending_WinImg.color += new Color(0,0,0,-0.05f);
-			yield return null;
-		}
-		yield return new WaitForSeconds(1);
-		SceneManager.LoadScene(0);
-		yield break;
+	public void PlayerWin () {
+		SoundtrackManager.instance.ChangeSet("Winning");
+		onWinEvent.Invoke();
 	}
 	
-	public IEnumerator PlayerLose () {
-		ending_LoseImg.color += new Color(0,0,0,-1);
-		ending_LoseImg.gameObject.SetActive(true);
-		while(ending_LoseImg.color.a <1){
-			ending_LoseImg.color += new Color(0,0,0,0.05f);
-			yield return null;
-		}
-		yield return new WaitForSeconds(1);
-		while(!Input.anyKey)
-
-			yield return null;
-		while(ending_LoseImg.color.a >0){
-			ending_LoseImg.color += new Color(0,0,0,-0.05f);
-			yield return null;
-		}
-		yield return new WaitForSeconds(1);
-		SceneManager.LoadScene(0);
-		yield break;
+	public void PlayerLose () {
+		SoundtrackManager.instance.ChangeSet("Intro");
+		onLoseEvent.Invoke();
 	}
 	#endregion
 
