@@ -3102,7 +3102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.91372555, g: 0.9294118, b: 0.7843138, a: 0}
+  m_Color: {r: 0.9245283, g: 0.81148344, b: 0.5800107, a: 0}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3585,6 +3585,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447840623983662845, guid: be5bb5f4db7eade42bde953f28534791,
+        type: 3}
+      propertyPath: soundtrackVolume
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be5bb5f4db7eade42bde953f28534791, type: 3}

@@ -60,11 +60,13 @@ public class PlayerView : MonoBehaviour
     #region Ending View
 	public void PlayerWin () {
 		SoundtrackManager.instance.ChangeSet("Winning");
+		AudioManager.instance.PlayTrack("Player_Win");
 		onWinEvent.Invoke();
 	}
 	
 	public void PlayerLose () {
 		SoundtrackManager.instance.ChangeSet("Intro");
+		AudioManager.instance.PlayTrack("Player_Lose");
 		onLoseEvent.Invoke();
 	}
 	#endregion

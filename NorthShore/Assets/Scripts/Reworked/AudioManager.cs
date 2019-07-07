@@ -6,6 +6,7 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour {
 
 	[HideInInspector]	public static AudioManager instance;
+	[Range(0,1)] public float generalVolume = 1;
 	public AnimationCurve rollofCurve;
 	public int sourceQuantity;
 	
@@ -64,7 +65,7 @@ public class AudioManager : MonoBehaviour {
 	IEnumerator Play(AudioClip s, float pitch, float volume, Vector2 randomStart, float playFor) {
 		AudioSource curSrc = sources[currentSource];
 		curSrc.pitch = pitch;
-		curSrc.volume = volume;
+		curSrc.volume = volume*generalVolume;
 		curSrc.clip = s;
 		curSrc.time = Random.Range(randomStart.x*s.length,randomStart.y*s.length);
 		curSrc.Play();
@@ -83,7 +84,7 @@ public class AudioManager : MonoBehaviour {
 			float drog = 0;
 			while(drog <= 1) {
 				drog+=Time.deltaTime*0.5f;
-				oldSource.volume = rollofCurve.Evaluate(drog);
+				oldSource.volume = rollofCurve.Evaluate(drog)*generalVolume;
 				yield return null;
 			}
 			oldSource.volume=0;

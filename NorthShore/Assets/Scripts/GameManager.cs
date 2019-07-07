@@ -59,7 +59,11 @@ public class GameManager : MonoBehaviour {
 		
 			if(Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space))
 				NextTurn();
-		
+
+			if(Input.GetKeyDown(KeyCode.Alpha9))
+				PlayerView.instance.PlayerWin();
+			if(Input.GetKeyDown(KeyCode.Alpha0))
+				PlayerView.instance.PlayerLose();
 	}
 
 	public void NextTurn(){

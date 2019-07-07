@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 462849463043220468}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 261, y: 102, z: 50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -43,6 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 501d77589a82b164b80f7683c8992ecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  generalVolume: 0.4
   rollofCurve:
     serializedVersion: 2
     m_Curve:
@@ -56,17 +57,17 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.35099763
-      value: 0.4665491
-      inSlope: -5.0251155
-      outSlope: -5.0251155
+      time: 0.73849607
+      value: 0.4791069
+      inSlope: -2.5301702
+      outSlope: -2.5301702
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.15716434
-      outWeight: 0.23349614
+      outWeight: 0.2201772
     - serializedVersion: 3
-      time: 0.57147056
-      value: 0.5516757
+      time: 0.9131301
+      value: 0.44493282
       inSlope: 0.13962062
       outSlope: 0.13962062
       tangentMode: 0
@@ -93,3 +94,15 @@ MonoBehaviour:
     track: {fileID: 8300000, guid: 4524ed98caf328c43b0e0f6104dcb313, type: 3}
     randomStart: {x: 0, y: 0.5}
     playFor: 0.6
+  - name: Player_Win
+    volume: 3
+    pitch: 1
+    track: {fileID: 8300000, guid: 0c71227ff21c3ef448a7eb895a2d67f2, type: 3}
+    randomStart: {x: 0, y: 0}
+    playFor: 0
+  - name: Player_Lose
+    volume: 3
+    pitch: 1
+    track: {fileID: 8300000, guid: 7c1d9e1a6aba06e48aba146b041b2e3e, type: 3}
+    randomStart: {x: 0, y: 0}
+    playFor: 0
