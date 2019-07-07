@@ -146,7 +146,7 @@ public class ProvinceData : MonoBehaviour {
 		lenghtY = highestY-smallestY;
 		lenghtX = highestX-smallestX;
 		//Position GUI in the middle of those lenghts
-		GUITroopsObject.transform.position = new Vector3(smallestX+lenghtX/2,transform.position.y+1,smallestY+lenghtY/2);
+		GUITroopsObject.transform.position = new Vector3(smallestX+lenghtX/2,transform.position.y+3,smallestY+lenghtY/2);
 	}
 
 }

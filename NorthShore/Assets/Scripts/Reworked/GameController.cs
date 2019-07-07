@@ -19,12 +19,10 @@ public class GameController : MonoBehaviour
 				gaining = 0;
 				//For balancing purpouses
 				if(currentPlayer == GameManager.instance.playerManager.playerData){
-					if(currentPlayer.provinces.Count <= 5)
+					if(currentPlayer.provinces.Count <= 3)
 						gaining+=1;
 				} else {
-					if(currentPlayer.provinces.Count >= 15)
-						gaining-=1;
-					if(currentPlayer.provinces.Count >= 30)
+					if(currentPlayer.provinces.Count >= 22)
 						gaining-=1;
 				}
 
@@ -51,7 +49,9 @@ public class GameController : MonoBehaviour
 							enemyNeighbourCount++;
 
 					if(enemyNeighbourCount != 0)
-						enemyNeighbourCount+=2;
+						enemyNeighbourCount+=3;
+					else
+						enemyNeighbourCount+=1;
 						
 					for(int a = enemyNeighbourCount-1; a >= 0 ;a--) {
 						if(d.troops < 6)

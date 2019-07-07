@@ -133,6 +133,10 @@ public class GameManager : MonoBehaviour {
 			provinces[i].neighbours = MapController.instance.GetNeighbours(provinces[i],grid,provinces);
 		}
 
+		//Set initial troops to 2 
+		foreach (ProvinceData p in provinces)
+			p.troops = 2;
+
 		//Distribute players
 		yield return StartCoroutine(DistributePlayers());
 		Debug.Log("Here1");
@@ -148,6 +152,8 @@ public class GameManager : MonoBehaviour {
 		PlayerView.instance.FadeOverlay(1);
 		Debug.Log("Here3");
 		//Dlay initial soundtrack
+		
+		
 		yield break;
 	}
 	public IEnumerator CheckGameState () {

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Dunhill
   m_EditorClassIdentifier: 
   name: Dunhill
-  color: {r: 0.5171769, g: 0.6692967, b: 0.735849, a: 0}
+  color: {r: 0.4719206, g: 0.8009641, b: 0.9528302, a: 0}
   pattern: {fileID: 2800000, guid: a646bbbc23953c7469d43b1236afbfbb, type: 3}
   aggressiveness:
     serializedVersion: 2
