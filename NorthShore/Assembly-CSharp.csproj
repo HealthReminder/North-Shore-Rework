@@ -55,7 +55,6 @@
   <ItemGroup>
      <Compile Include="Assets\SceneBehaviour.cs" />
      <Compile Include="Assets\Scripts\AIManager.cs" />
-     <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\MapController.cs" />
      <Compile Include="Assets\Scripts\Reworked\AudioManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\Behaviours\ButtonBehaviour.cs" />
@@ -63,6 +62,7 @@
      <Compile Include="Assets\Scripts\Reworked\Behaviours\SupportDevelopersBehaviour.cs" />
      <Compile Include="Assets\Scripts\Reworked\CellData.cs" />
      <Compile Include="Assets\Scripts\Reworked\GameController.cs" />
+     <Compile Include="Assets\Scripts\Reworked\GameManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\GameModeSelectionManager.cs" />
      <Compile Include="Assets\Scripts\Reworked\PlayerInfo.cs" />
      <Compile Include="Assets\Scripts\Reworked\PlayerManager.cs" />
