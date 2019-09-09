@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Valenti
   m_EditorClassIdentifier: 
   name: Valenti
-  color: {r: 0.9528302, g: 0.7144621, b: 0.3460751, a: 0}
+  color: {r: 0.9811321, g: 0.67696923, b: 0.2082592, a: 0}
   pattern: {fileID: 2800000, guid: bc371ee057b15b14cb84fd001de2e8fd, type: 3}
   aggressiveness:
     serializedVersion: 2

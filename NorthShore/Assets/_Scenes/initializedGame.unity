@@ -5314,7 +5314,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.4811321, g: 0.4073983, b: 0.32453722, a: 1}
+  m_BackGroundColor: {r: 0.3301887, g: 0.2793739, b: 0.21026167, a: 1}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -5606,14 +5606,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   winCondition:
     maxPercentage: 0.83
-  isMatchEnded: 0
-  playingNow: 
   mapSizeX: 100
   mapSizeY: 100
+  provinces: []
+  isMatchEnded: 0
+  playingNow: 
   playerManager: {fileID: 1103680972}
   allPlayers: []
   turn: 1
-  provinces: []
   nextTurnPlayerInput: 0
   AIMan: {fileID: 1673500014}
   aiOnly: 0

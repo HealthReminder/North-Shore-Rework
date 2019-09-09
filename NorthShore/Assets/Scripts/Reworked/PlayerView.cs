@@ -23,6 +23,10 @@ public class PlayerView : MonoBehaviour
     private void Awake() {
         instance = this;
     }
+	private void Start() {
+		if(PlayerPrefs.GetInt("AIOnly") == 1)
+			nextTurnButtonObject.SetActive(false);
+	}
 	#region Events 
 	public void OnPlayerTurn(string state) {
 		if(state == "OnStart"){

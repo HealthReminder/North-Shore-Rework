@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour {
 			yield return CheckGameState();
 
 			//NEW TURN
-			GameController.instance.DistributeTroops(allPlayers,isScrambleMode);
+			GameController.instance.DistributeTroops(allPlayers,turn,isScrambleMode);
 			turn++;
 			yield return null;
 		}
@@ -135,9 +135,12 @@ public class GameManager : MonoBehaviour {
 			provinces[i].neighbours = MapController.instance.GetNeighbours(provinces[i],mapGrid,provinces);
 		}
 
-		//Set initial troops to 2 
-		foreach (ProvinceData p in provinces)
-			p.troops = 2;
+		//Set initial troops to 1 
+		//foreach (ProvinceData p in provinces){
+			//int num = Random.Range(0,5);
+			//if(num == 0)
+			//	p.troops = 2;
+		//}
 
 		//Distribute players
 		yield return StartCoroutine(DistributePlayers());

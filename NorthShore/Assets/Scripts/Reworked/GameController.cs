@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
 		instance = this;
 	}
 	#region Troop Distribution
-	public void DistributeTroops(PlayerData[] allPlayers, int isScrambled){
+	public void DistributeTroops(PlayerData[] allPlayers,int currentTurn, int isScrambled){
 		//Do it for every player
 		int gaining = 0;
 		print("Here 2.");
@@ -39,6 +39,14 @@ public class GameController : MonoBehaviour
 				//DEBUG ONLY
 				//if(currentPlayer == GameManager.instance.playerManager.playerData)
 					//gaining*=10;
+				//Get a factor within the turn
+				//Players will get more troops inland the earlier
+				//And more troops on the border the later
+				int turnFactor = (currentTurn/8);
+				turnFactor = Mathf.Clamp(turnFactor,0,6);
+				//Turn 0  = 0
+				//Turn 8 = 1
+				//Turn 16 = 2
 
 				//Distribute the troops to the heighest priority targets
 				List<ProvinceData> targets = new List<ProvinceData>();
@@ -49,9 +57,9 @@ public class GameController : MonoBehaviour
 							enemyNeighbourCount++;
 
 					if(enemyNeighbourCount != 0)
-						enemyNeighbourCount+=3;
+						enemyNeighbourCount+=turnFactor;
 					else
-						enemyNeighbourCount+=1;
+						enemyNeighbourCount+=2-turnFactor;
 						
 					for(int a = enemyNeighbourCount-1; a >= 0 ;a--) {
 						if(d.troops < 6)
