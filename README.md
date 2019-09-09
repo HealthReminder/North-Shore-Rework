@@ -1,2 +1,3 @@
-# GameNorthShore
-A Risk-like game
+# North Shore
+![](sample01.gif)
+![](sample02.gif)
