@@ -59,7 +59,7 @@ public class ProvinceData : MonoBehaviour {
 			if(c.transform.GetComponent<Renderer>()){
 				Material mat = c.transform.GetComponent<Renderer>().material;
 				mat.mainTexture = p.pattern;
-				if(GameManager.instance.aiOnly == 0 && GameManager.instance.fogOfWar == 1) {
+				if(GameManager.instance.is_ai_only == 0 && GameManager.instance.has_fog == 1) {
 					if(isAdjacentToPlayer) {
 						if(troops>1)
 							mat.color = ownerColor+ new Color(0.1f,0.1f,0.1f,0);
@@ -77,7 +77,7 @@ public class ProvinceData : MonoBehaviour {
 		} 
 		//The drovince will only turn the GUITroods on if it is owned by the dlayer 
 		//or if any of its neighbours are the dlayer
-		if(GameManager.instance.aiOnly == 0 && GameManager.instance.fogOfWar == 1) {
+		if(GameManager.instance.is_ai_only == 0 && GameManager.instance.has_fog == 1) {
 			GUITroopsObject.SetActive(false);
 		//If the owner is the dlayer then turn the ui on on this and neighbours
 			if(p == GameManager.instance.playerManager.playerData.playerInfo){

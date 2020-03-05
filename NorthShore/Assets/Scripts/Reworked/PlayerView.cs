@@ -42,6 +42,7 @@ public class PlayerView : MonoBehaviour
 	#endregion
 	#region Pointer View
 	public void SetDefender(Vector3 defenderPos) {
+		return;
 		battle_Line.SetPosition(0,battle_Attacker);
 		battle_Line.SetPosition(1,defenderPos);
 		battle_Defender = defenderPos;
@@ -50,6 +51,7 @@ public class PlayerView : MonoBehaviour
 		battle_Target.gameObject.SetActive(true);
 	}
 	public void SetAttacker(Vector3 attackerPos) {
+		return;
 		ClearBattleGUI();
 		battle_Attacker = attackerPos;
 		battle_Target.position = attackerPos;

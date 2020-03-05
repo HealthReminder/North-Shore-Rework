@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour {
 	[SerializeField] public WinCondition winCondition;
 	[Header("Map Info")]
 	public int mapSizeX,mapSizeY;
+	public int map_size_modifier;
 	public List<ProvinceData> provinces;
 	[Header("Game State")]
 	public bool isMatchEnded = false;
@@ -26,8 +27,8 @@ public class GameManager : MonoBehaviour {
 	[Header("Manager Info")]
 	public PlayerManager playerManager;
 	public PlayerData[] allPlayers;
-	Transform [,] mapGrid;
-	public int turn=1;
+	Transform [,] map_transform;
+	public int current_turn=1;
 	[HideInInspector]public bool nextTurnPlayerInput = false;
 
 	
@@ -35,9 +36,11 @@ public class GameManager : MonoBehaviour {
 	public AIManager AIMan;
 
 	[Header("Player prefs")]
-	public int aiOnly;
-	public int isScrambleMode;
-	public int fogOfWar;
+	public int is_ai_only;
+	public int is_scrambled;
+	public int has_fog;
+
+	public int cycle_duration;
 
 	public static GameManager instance;
 	private void Awake() {
@@ -46,9 +49,10 @@ public class GameManager : MonoBehaviour {
 	public void Start () {
 		//Get player scriptable object for future reference
 		PlayerView.instance.overlay.color += new Color(0,0,0,1);
-		aiOnly	= PlayerPrefs.GetInt("AIOnly");
-		isScrambleMode = PlayerPrefs.GetInt("Scrambled");
-		fogOfWar = PlayerPrefs.GetInt("FogOfWar");
+		is_ai_only	= PlayerPrefs.GetInt("AIOnly");
+		is_scrambled = PlayerPrefs.GetInt("Scrambled");
+		has_fog = PlayerPrefs.GetInt("FogOfWar");
+		cycle_duration = PlayerPrefs.GetInt ("Cycle Duration");
 		//Here you should call the loading screen and turn off the other GUI from the menu
 		StartCoroutine(GameLoop());
 	}
@@ -76,7 +80,7 @@ public class GameManager : MonoBehaviour {
 			//PLAYER TURN
 			nextTurnPlayerInput = false;
 			playerManager.isBusy=true;
-			if(aiOnly == 0){
+			if(is_ai_only == 0){
 				if(playerManager.playerData.provinces.Count > 0){
 					PlayerView.instance.OnPlayerTurn("OnStart");
 					playerManager.isBusy=false;
@@ -91,14 +95,15 @@ public class GameManager : MonoBehaviour {
 			//AI TURN
 			foreach(PlayerInfo ai in AIMan.AI ) {
 				playingNow = ai.name; 
-				yield return StartCoroutine(AIMan.Calculate(ai)); 
+				ReactionView.instance.CheckForView(ai,current_turn,cycle_duration);
+				yield return StartCoroutine(AIMan.Calculate(ai,current_turn,cycle_duration)); 
 			}
 
 			yield return CheckGameState();
 
 			//NEW TURN
-			GameController.instance.DistributeTroops(allPlayers,turn,isScrambleMode);
-			turn++;
+			GameController.instance.DistributeTroops(allPlayers,current_turn,is_scrambled);
+			current_turn++;
 			yield return null;
 		}
 
@@ -106,19 +111,20 @@ public class GameManager : MonoBehaviour {
 	IEnumerator Setup() {
 		//START
 		//Map generation
-		mapGrid = MapController.instance.GenerateMap(mapSizeX,mapSizeY);
-		Debug.Log("Generated map of size "+mapGrid.GetLength(0)+","+mapGrid.GetLength(1));
+		map_size_modifier = PlayerPrefs.GetInt("Player_Map_Size");
+		map_transform = MapController.instance.GenerateMap(mapSizeX*map_size_modifier,mapSizeY*map_size_modifier);
+		Debug.Log("Generated map of size "+map_transform.GetLength(0)+","+map_transform.GetLength(1));
 
-		MapController.instance.PolishCells (mapGrid,1,mapSizeX,mapSizeY);
-		MapController.instance.PolishCells (mapGrid,2,mapSizeX,mapSizeY);
+		MapController.instance.PolishCells (map_transform,1,mapSizeX,mapSizeY);
+		MapController.instance.PolishCells (map_transform,2,mapSizeX,mapSizeY);
 		Debug.Log("Polished map.");
 
 		//Deform terrain
-		MapController.instance.DeformTerrain(mapGrid);
+		MapController.instance.DeformTerrain(map_transform);
 
 		//Distribute provinces
 		provinces = new List<ProvinceData>();
-		yield return StartCoroutine(MapController.instance.DistributeProvincesAndCells(mapGrid,provinces));
+		yield return StartCoroutine(MapController.instance.DistributeProvincesAndCells(map_transform,provinces,map_size_modifier));
 
 		Debug.Log("Distributed cell ownership.");
 
@@ -132,7 +138,7 @@ public class GameManager : MonoBehaviour {
 		
 		//Get neighbours
 		for(int i = provinces.Count-1; i >=0 ;i--) {
-			provinces[i].neighbours = MapController.instance.GetNeighbours(provinces[i],mapGrid,provinces);
+			provinces[i].neighbours = MapController.instance.GetNeighbours(provinces[i],map_transform,provinces);
 		}
 
 		//Set initial troops to 1 
@@ -165,7 +171,7 @@ public class GameManager : MonoBehaviour {
 		SoundtrackCheck();
 		if(isMatchEnded)
 			yield break;
-		if(turn <= 5)
+		if(current_turn <= 5)
 			yield break;
 
 		foreach(PlayerData a in allPlayers) {
@@ -174,7 +180,7 @@ public class GameManager : MonoBehaviour {
 				if(a.playerInfo == playerManager.playerData.playerInfo)
 					PlayerView.instance.PlayerWin();
 				else {
-					if(aiOnly == 0){
+					if(is_ai_only == 0){
 						isMatchEnded = true;
 						PlayerView.instance.PlayerLose();
 					}
@@ -187,7 +193,7 @@ public class GameManager : MonoBehaviour {
 				//SoundtrackManager.instance.ChangeSet("Intro");
 			}
 		}
-		if(aiOnly == 0){
+		if(is_ai_only == 0){
 			//End game if the player has no provinces
 			if(playerManager.playerData.provinces.Count <=0){
 				isMatchEnded = true;
@@ -213,12 +219,12 @@ public class GameManager : MonoBehaviour {
 		//Check if the player has more than 50% of the mad
 		//Check if the game is late and the player has less than 40% of the mad
 		if(!isMatchEnded){
-			if(aiOnly == 1){
-				if(turn >= 10)
+			if(is_ai_only == 1){
+				if(current_turn >= 10)
 					SoundtrackManager.instance.ChangeSet("Intense");
-			}else if(turn == 4){
+			}else if(current_turn == 4){
 				SoundtrackManager.instance.ChangeSet("Struggle");
-			} else if(turn > 10){
+			} else if(current_turn > 10){
 				if(playerManager.playerData.provinces.Count > 2*provinces.Count/3){
 					SoundtrackManager.instance.ChangeSet("Winning");
 				} else if(playerManager.playerData.provinces.Count <= provinces.Count/4){
@@ -231,9 +237,9 @@ public class GameManager : MonoBehaviour {
 	}       
 	IEnumerator DistributePlayers() {
 		AIMan.Setup();
-		if(aiOnly == 1)
+		if(is_ai_only == 1)
 			allPlayers = AIMan.currentStats;
-		else if(aiOnly == 0){
+		else if(is_ai_only == 0){
 			allPlayers = new PlayerData[AIMan.currentStats.Length+1];
 			for (int s = 0; s < allPlayers.Length; s++)
 			{
@@ -265,7 +271,7 @@ public class GameManager : MonoBehaviour {
 		bool onlyOne = false;
 		while(tempProvinces.Count > 0){
 			randomIndex = Random.Range(0,tempProvinces.Count);
-			if(isScrambleMode == 1)
+			if(is_scrambled == 1)
 				onlyOne = true;
 			
 			//Allocate memory for the drovinces its getting

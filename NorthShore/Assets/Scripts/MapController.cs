@@ -14,12 +14,12 @@ public class MapController : MonoBehaviour
     }
 
 	#region Map Data Distribution
-	public IEnumerator DistributeProvincesAndCells(Transform[,] grid, List<ProvinceData> provinces)	{
+	public IEnumerator DistributeProvincesAndCells(Transform[,] grid, List<ProvinceData> provinces, int modifier)	{
 		containerBoard = new GameObject("Board").transform;
 		float zSize = grid.GetLength(1);
         float xSize = grid.GetLength(0);
 		List<Vector3> points = new List<Vector3>();
-		int variation = Random.Range(-2,3);
+		int variation = Random.Range(-2,3)*modifier;
 		int newX,newY;
 		newX = (int)Mathf.Sqrt(xSize)-1;
 		newY = (int)Mathf.Sqrt(zSize)-1;

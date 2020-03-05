@@ -53,6 +53,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\BattleGUIManager.cs" />
+     <Compile Include="Assets\DeveloperConsole.cs" />
+     <Compile Include="Assets\ReactionView.cs" />
      <Compile Include="Assets\SceneBehaviour.cs" />
      <Compile Include="Assets\Scripts\AIManager.cs" />
      <Compile Include="Assets\Scripts\MapController.cs" />
@@ -72,19 +75,19 @@
      <Compile Include="Assets\Scripts\Unused\CameraController.cs" />
      <Compile Include="Assets\Scripts\Unused\MenuManager.cs" />
  <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/NorthShore/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+ <HintPath>B:/Projetos/2020/1/North-Shore-Rework-2/NorthShore/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.PackageManagerUI.Editor">
- <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/NorthShore/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+ <HintPath>B:/Projetos/2020/1/North-Shore-Rework-2/NorthShore/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.CollabProxy.Editor">
- <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/NorthShore/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+ <HintPath>B:/Projetos/2020/1/North-Shore-Rework-2/NorthShore/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro">
- <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/NorthShore/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+ <HintPath>B:/Projetos/2020/1/North-Shore-Rework-2/NorthShore/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.DataPrivacy">
- <HintPath>B:/Projetos/2019/2/North-Shore-Rework/NorthShore/NorthShore/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
+ <HintPath>B:/Projetos/2020/1/North-Shore-Rework-2/NorthShore/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.12f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
