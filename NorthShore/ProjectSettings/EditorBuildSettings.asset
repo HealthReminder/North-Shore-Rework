@@ -11,7 +11,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Assets/_Scenes/initializedGame.unity
     guid: a24acbdaa97d3d74db04fac46e2e3c3e
-  - enabled: 0
-    path: Assets/Assets/_Scenes/ArrowTest.unity
-    guid: e74d8fe6c011d9a409d92606ea473ff3
   m_configObjects: {}

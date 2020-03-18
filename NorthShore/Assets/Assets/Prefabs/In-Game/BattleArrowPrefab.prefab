@@ -40,7 +40,7 @@ TrailRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8691659177151993536}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -81,48 +81,39 @@ TrailRenderer:
       - serializedVersion: 3
         time: 0
         value: 0
-        inSlope: 9.408654
-        outSlope: 9.408654
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.9407436
-      - serializedVersion: 3
-        time: 0.111893564
-        value: 1
-        inSlope: 9.346388
-        outSlope: 9.346388
+        inSlope: 4.4564943
+        outSlope: 4.4564943
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.9608024
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.11740363
-        value: 0.20961304
-        inSlope: 0.040438473
-        outSlope: 0.040438473
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
         outWeight: 1
       - serializedVersion: 3
-        time: 0.95
-        value: 0.2
-        inSlope: 0.0078102592
-        outSlope: 0.0078102592
+        time: 0.13146424
+        value: 0.5865376
+        inSlope: 4.3883715
+        outSlope: 4.3883715
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 1
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.14251435
+        value: 0.23448122
+        inSlope: 0.0069377674
+        outSlope: 0.0069377674
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.33333334
+        outWeight: 0.99232763
       - serializedVersion: 3
         time: 1
-        value: 0.2
-        inSlope: 0.007545728
-        outSlope: 0.007545728
+        value: 0.23985052
+        inSlope: 0.0049211076
+        outSlope: 0.0049211076
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.9926791
-        outWeight: 0
+        inWeight: 1
+        outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -159,8 +150,8 @@ TrailRenderer:
     numCapVertices: 0
     alignment: 0
     textureMode: 0
-    shadowBias: 0.5
+    shadowBias: 0
     generateLightingData: 0
-  m_MinVertexDistance: 0.1
+  m_MinVertexDistance: 0.2
   m_Autodestruct: 0
   m_Emitting: 1

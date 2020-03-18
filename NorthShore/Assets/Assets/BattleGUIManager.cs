@@ -39,10 +39,10 @@ public class BattleGUIManager : MonoBehaviour {
         float fade_velocity = 1;
         if (is_ai_only == 1) {
             trail.time = 0.5f;
-            velocity = 5;
+            velocity = 20;
         } else {
             trail.time = 5f;
-            velocity = 5;
+            velocity = 20;
         }
         color.a = 1;
         trail.startColor = trail.endColor = color;
@@ -51,7 +51,7 @@ public class BattleGUIManager : MonoBehaviour {
             obj.transform.position = Vector3.Lerp (start, end, progress);
             progress += Time.deltaTime * velocity;
             Debug.Log (progress);
-            yield return null;
+            yield return new WaitForSeconds(0.05f);
         }
         obj.transform.position = end;
         yield return new WaitForSeconds (3);
