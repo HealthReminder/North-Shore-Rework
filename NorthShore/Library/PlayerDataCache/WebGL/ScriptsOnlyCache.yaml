@@ -1,5 +1,7 @@
 ScriptsOnlyBuild:
   usedScripts:
+    Assembly-CSharp-Editor.dll:
+    - ReadmeEditor
     Assembly-CSharp.dll:
     - AIManager
     - AudioManager
@@ -17,6 +19,7 @@ ScriptsOnlyBuild:
     - PlayerView
     - ProvinceData
     - ReactionView
+    - Readme
     - SceneBehaviour
     - SoundtrackManager
     - SupportDevelopersBehaviour
@@ -26,7 +29,6 @@ ScriptsOnlyBuild:
     - UnityEngine.Rendering.LWRP.LightweightRenderPipelineEditorResources
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
-    - UnityEditor.TestTools.TestRunner.TestListCacheData
     UnityEngine.UI.dll:
     - UnityEngine.EventSystems.EventSystem
     - UnityEngine.EventSystems.EventTrigger
@@ -174,9 +176,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 14012}
     - Class: 114
-      Script: {instanceID: 14468}
+      Script: {instanceID: 16784}
     - Class: 114
-      Script: {instanceID: 14498}
+      Script: {instanceID: 16804}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 120
@@ -906,4 +908,4 @@ ScriptsOnlyBuild:
   scenePathNames:
   - Assets/Assets/_Scenes/MainMenu.unity
   - Assets/Assets/_Scenes/initializedGame.unity
-  playerPath: B:/Projetos/2020/2/North-Shore-Fixed-Build/Build-01
+  playerPath: B:/Projetos/2020/2/North-Shore-Fixed-Build/Build-02

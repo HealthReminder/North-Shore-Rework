@@ -87,10 +87,9 @@ public class GameController : MonoBehaviour
 	public IEnumerator Battle(ProvinceData attacker, ProvinceData defender) {
 		
 		//Player shots if visible
-		if(defender.isAdjacentToPlayer){
+		if(defender.isAdjacentToPlayer)
 			AudioManager.instance.PlayTrack("Player_Shots");
-			yield return new WaitForSeconds(0.1f);
-		}
+		
 
 		//Calculate dice rolls
 		int attackerValue, defenderValue;
@@ -114,12 +113,14 @@ public class GameController : MonoBehaviour
 			defender.UpdateGUI();
 			attacker.UpdateGUI();
 		} else {
+			PlayerData playerData = GameManager.instance.playerManager.playerData;
+			AIManager manager = AIManager.instance;
 			//If the attacker wins, the defender loses its spot. 
 			//The attacking troops moves to the defending spot with one less troop, leaving one behind.
 			//Take the province away from the owner
-			if(GameManager.instance.playerManager.playerData.playerInfo == defender.owner){
+			if(playerData.playerInfo == defender.owner){
 				//Debug.Log("The player is the loser");
-				List<ProvinceData> playerProvinces = GameManager.instance.playerManager.playerData.provinces;
+				List<ProvinceData> playerProvinces = playerData.provinces;
 				for(int f = playerProvinces.Count-1; f>=0; f--) {
 					if(playerProvinces[f] == defender){
 						//Debug.Log("Removed province from the player.");
@@ -127,14 +128,14 @@ public class GameController : MonoBehaviour
 					}else	Debug.Log("ERROR - Couldn't find the losing province owned by the player");
 				}
 			} else {
-				AIManager.instance.RemoveProvince(defender);	
+				manager.RemoveProvince(defender);	
 			}
 			//Give the province to another owner
-			if(GameManager.instance.playerManager.playerData.playerInfo.name == attacker.owner.name){
+			if(playerData.playerInfo.name == attacker.owner.name){
 			//	Debug.Log("The player is the winner");
-				GameManager.instance.playerManager.playerData.provinces.Add(defender);
+				playerData.provinces.Add(defender);
 			} else {
-				AIManager.instance.AddProvince(defender,attacker.owner.name);
+				manager.AddProvince(defender,attacker.owner.name);
 			}
 			
 			defender.troops = attacker.troops-1;

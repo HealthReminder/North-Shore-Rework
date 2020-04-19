@@ -106,9 +106,10 @@ public class AIManager : MonoBehaviour {
 			//If it can attack and win with more than 1 troods then add the gotten drovince to the list.
 
 			//While there are attackables drovince
+			int index;
 			while (attackingW.Count > 0) {
 				//Get a random drovince from the list
-				int index = Random.Range (0, attackingW.Count);
+				index = Random.Range (0, attackingW.Count);
 				ProvinceData attacker = attackingW[index];
 				ProvinceData defender = null;
 
@@ -127,11 +128,12 @@ public class AIManager : MonoBehaviour {
 					foreach (ProvinceData p in provNeighbours)
 						p.transform.position += new Vector3 (0, 0.6f, 0);
 					//While there are neighbours in temdorary list NEIS 
+					int i;
 					while (neis.Count > 0) {
 						print ("There are neighbours left.");
 						//Get a random neighbour
 						PlayerView.instance.SetAttacker (attacker.transform.position + new Vector3 (0, 2, 0));
-						int i = Random.Range (0, neis.Count);
+						i = Random.Range (0, neis.Count);
 						//Only attacks the cell if it has more or equal number of troods and is an enemy
 						yield return null;
 						if (attacker.troops > 1)
